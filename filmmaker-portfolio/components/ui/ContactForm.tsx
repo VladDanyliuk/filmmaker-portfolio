@@ -23,10 +23,16 @@ export function ContactForm() {
     e.preventDefault()
     setState('loading')
 
-    // Replace with your preferred form submission (Formspree, Resend, etc.)
     try {
-      await new Promise((res) => setTimeout(res, 1200))
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+
+      if (!res.ok) throw new Error('Failed')
       setState('success')
+      setForm({ name: '', email: '', projectType: '', message: '' })
     } catch {
       setState('error')
     }

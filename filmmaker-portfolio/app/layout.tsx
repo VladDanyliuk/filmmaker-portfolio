@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
+import { CookieBanner } from '@/components/ui/CookieBanner'
 import { client } from '@/sanity/lib/client'
 import { siteSettingsQuery } from '@/sanity/lib/queries'
 import type { SiteSettings } from '@/lib/types'
@@ -34,6 +35,7 @@ export default async function RootLayout({
         <Navbar />
         <main>{children}</main>
         <Footer settings={settings!} />
+        <CookieBanner />
       </body>
     </html>
   )

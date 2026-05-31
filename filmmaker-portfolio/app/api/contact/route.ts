@@ -1,6 +1,20 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
+const WINDOW_MS = 15 * 60 * 1000
+const MAX_REQUESTS = 3
+
+const rateLimitMap = new Map<string, number[]>()
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now()
+  const timestamps = (rateLimitMap.get(ip) ?? []).filter((t) => now - t < WINDOW_MS)
+  if (timestamps.length >= MAX_REQUESTS) return true
+  timestamps.push(now)
+  rateLimitMap.set(ip, timestamps)
+  return false
+}
+
 function userConfirmationHtml(name: string): string {
   return `<!DOCTYPE html>
 <html>
@@ -124,6 +138,11 @@ function adminNotificationHtml(data: {
 
 export async function POST(request: Request) {
   try {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
+    if (isRateLimited(ip)) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+    }
+
     const apiKey = process.env.RESEND_API_KEY
     const adminEmail = process.env.ADMIN_EMAIL
     const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev'
@@ -141,11 +160,16 @@ export async function POST(request: Request) {
     const resend = new Resend(apiKey)
 
     const body = await request.json()
-    const { name, email, projectType, message } = body as {
+    const { name, email, projectType, message, website } = body as {
       name?: string
       email?: string
       projectType?: string
       message?: string
+      website?: string
+    }
+
+    if (website) {
+      return NextResponse.json({ success: true })
     }
 
     if (!name?.trim() || !email?.trim() || !message?.trim()) {

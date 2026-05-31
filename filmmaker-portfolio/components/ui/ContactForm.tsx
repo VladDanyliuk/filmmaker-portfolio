@@ -11,6 +11,7 @@ export function ContactForm() {
     email: '',
     projectType: '',
     message: '',
+    website: '',
   })
 
   const handleChange = (
@@ -32,7 +33,7 @@ export function ContactForm() {
 
       if (!res.ok) throw new Error('Failed')
       setState('success')
-      setForm({ name: '', email: '', projectType: '', message: '' })
+      setForm({ name: '', email: '', projectType: '', message: '', website: '' })
     } catch {
       setState('error')
     }
@@ -125,6 +126,20 @@ export function ContactForm() {
           onChange={handleChange}
           placeholder="Tell me about your project..."
           className={`${inputClass} resize-none`}
+        />
+      </div>
+
+      {/* Honeypot — hidden from humans, filled by bots */}
+      <div style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden' }} aria-hidden="true">
+        <label htmlFor="website">Website</label>
+        <input
+          id="website"
+          name="website"
+          type="text"
+          value={form.website}
+          onChange={handleChange}
+          tabIndex={-1}
+          autoComplete="off"
         />
       </div>
 

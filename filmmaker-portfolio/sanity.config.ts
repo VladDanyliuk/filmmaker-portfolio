@@ -26,7 +26,6 @@ export default defineConfig({
               ),
             S.divider(),
             S.documentTypeListItem('page').title('Pages'),
-            S.documentTypeListItem('service').title('Services'),
             S.documentTypeListItem('project').title('Projects'),
           ]),
     }),

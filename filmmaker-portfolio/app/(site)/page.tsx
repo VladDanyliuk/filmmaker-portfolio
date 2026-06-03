@@ -48,7 +48,7 @@ export default async function HomePage() {
         subtext="Based in London, available worldwide. Let's create something that moves people."
         primaryLabel="Start a Project"
         primaryHref="/contact"
-        secondaryLabel="Services"
+        secondaryLabel="Service"
         secondaryHref="/work"
       />
     </>

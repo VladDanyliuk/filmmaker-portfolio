@@ -58,7 +58,7 @@ export default async function AboutPage() {
         subtext="Open for projects in London and beyond."
         primaryLabel="Get in Touch"
         primaryHref="/contact"
-        secondaryLabel="Services"
+        secondaryLabel="Service"
         secondaryHref="/work"
       />
     </>

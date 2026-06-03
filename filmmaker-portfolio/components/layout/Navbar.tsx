@@ -8,7 +8,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
-  { href: '/services', label: 'Services' },
   { href: '/work', label: 'Work' },
   { href: '/contact', label: 'Contact' },
 ]
@@ -44,7 +43,8 @@ export function Navbar() {
           scrolled ? 'bg-glass border-b border-glass' : 'bg-transparent'
         }`}
       >
-        <div className="container mx-auto px-6 md:px-10 h-16 md:h-20 flex items-center justify-between">
+        <div className="container mx-auto px-6 md:px-10 h-16 md:h-20 flex items-center justify-between md:grid md:grid-cols-3">
+          {/* Logo — left */}
           <Link
             href="/"
             className="font-display font-semibold text-lg md:text-xl tracking-tight text-text-primary"
@@ -52,8 +52,8 @@ export function Navbar() {
             SA<span className="text-gradient-warm">.</span>
           </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-8">
+          {/* Desktop nav — truly centered */}
+          <nav className="hidden md:flex items-center justify-center gap-10">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -69,36 +69,38 @@ export function Navbar() {
             ))}
           </nav>
 
-          <Link
-            href="/contact"
-            className="hidden md:inline-flex items-center gap-2 px-5 py-2 text-sm font-medium border border-glass rounded-full text-text-primary hover:border-accent-orange/40 hover:text-accent-orange transition-all duration-300"
-          >
-            Book a Call
-          </Link>
+          {/* Right side — button (desktop) or hamburger (mobile) */}
+          <div className="flex items-center justify-end">
+            <Link
+              href="/contact"
+              className="hidden md:inline-flex items-center gap-2 px-5 py-2 text-sm font-medium border border-glass rounded-full text-text-primary hover:border-accent-orange/40 hover:text-accent-orange transition-all duration-300"
+            >
+              Book a Call
+            </Link>
 
-          {/* Mobile hamburger */}
-          <button
-            onClick={() => setMenuOpen((v) => !v)}
-            className="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5"
-            aria-label="Toggle menu"
-            aria-expanded={menuOpen}
-          >
-            <span
-              className={`block h-px w-6 bg-text-primary transition-all duration-300 ${
-                menuOpen ? 'rotate-45 translate-y-2' : ''
-              }`}
-            />
-            <span
-              className={`block h-px w-6 bg-text-primary transition-all duration-300 ${
-                menuOpen ? 'opacity-0' : ''
-              }`}
-            />
-            <span
-              className={`block h-px w-6 bg-text-primary transition-all duration-300 ${
-                menuOpen ? '-rotate-45 -translate-y-2' : ''
-              }`}
-            />
-          </button>
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              className="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5"
+              aria-label="Toggle menu"
+              aria-expanded={menuOpen}
+            >
+              <span
+                className={`block h-px w-6 bg-text-primary transition-all duration-300 ${
+                  menuOpen ? 'rotate-45 translate-y-2' : ''
+                }`}
+              />
+              <span
+                className={`block h-px w-6 bg-text-primary transition-all duration-300 ${
+                  menuOpen ? 'opacity-0' : ''
+                }`}
+              />
+              <span
+                className={`block h-px w-6 bg-text-primary transition-all duration-300 ${
+                  menuOpen ? '-rotate-45 -translate-y-2' : ''
+                }`}
+              />
+            </button>
+          </div>
         </div>
       </header>
 

@@ -32,7 +32,7 @@ export function Footer({ settings }: FooterProps) {
               {[
                 { href: '/', label: 'Home' },
                 { href: '/about', label: 'About' },
-                { href: '/work', label: 'Selected Work' },
+                { href: '/work', label: 'Services' },
                 { href: '/contact', label: 'Contact' },
               ].map((link) => (
                 <Link

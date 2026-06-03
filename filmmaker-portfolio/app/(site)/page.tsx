@@ -25,7 +25,7 @@ export default async function HomePage() {
             <div className="flex items-end justify-between mb-10 md:mb-14">
               <div>
                 <p className="text-xs uppercase tracking-widest text-accent-orange mb-3">
-                  Selected Work
+                  Selected Projects
                 </p>
                 <h2 className="font-display text-3xl md:text-5xl font-medium tracking-tight">
                   Featured Projects
@@ -48,7 +48,7 @@ export default async function HomePage() {
         subtext="Based in London, available worldwide. Let's create something that moves people."
         primaryLabel="Start a Project"
         primaryHref="/contact"
-        secondaryLabel="See the Work"
+        secondaryLabel="Services"
         secondaryHref="/work"
       />
     </>

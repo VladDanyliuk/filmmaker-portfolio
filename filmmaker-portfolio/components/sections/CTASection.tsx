@@ -15,7 +15,7 @@ export function CTASection({
   subtext = "Let's collaborate on your next cinematic project.",
   primaryLabel = 'Start a Project',
   primaryHref = '/contact',
-  secondaryLabel = 'View Work',
+  secondaryLabel = 'Services',
   secondaryHref = '/work',
 }: CTASectionProps) {
   return (

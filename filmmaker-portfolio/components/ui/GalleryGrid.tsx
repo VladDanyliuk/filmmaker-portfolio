@@ -56,7 +56,7 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
         <AnimatePresence>
           {filtered.map((project, i) => {
             const imgSrc = project.coverImage
-              ? urlFor(project.coverImage).width(800).height(540).url()
+              ? urlFor(project.coverImage).width(800).height(540).fit('crop').url()
               : null
 
             return (

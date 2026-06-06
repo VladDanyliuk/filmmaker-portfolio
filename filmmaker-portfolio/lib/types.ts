@@ -27,6 +27,12 @@ export interface SanityImage {
     height: number
     width: number
   }
+  crop?: {
+    top: number
+    bottom: number
+    left: number
+    right: number
+  }
   alt?: string
 }
 

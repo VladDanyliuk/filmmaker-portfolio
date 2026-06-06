@@ -24,7 +24,7 @@ export function HeroSection({ settings }: HeroSectionProps) {
   }, [])
 
   const fallbackSrc = settings?.heroFallbackImage
-    ? urlFor(settings.heroFallbackImage).width(1920).url()
+    ? urlFor(settings.heroFallbackImage).width(1920).height(1080).fit('crop').url()
     : null
 
   const containerVariants = {

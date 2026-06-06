@@ -9,7 +9,7 @@ import { RevealOnScroll } from '@/components/motion/RevealOnScroll'
 export const revalidate = 60
 
 export const metadata: Metadata = {
-  title: 'Service',
+  title: 'Services',
   description: 'A curated selection of cinematic films, commercials, and documentaries.',
 }
 
@@ -31,7 +31,7 @@ export default async function WorkPage() {
           </RevealOnScroll>
           <RevealOnScroll delay={0.1}>
             <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-medium tracking-tight max-w-3xl">
-              {page?.title || 'Service'}
+              {page?.title || 'Services'}
             </h1>
           </RevealOnScroll>
           {page?.subtitle && (

@@ -18,7 +18,7 @@ export function Footer({ settings }: FooterProps) {
               href="/"
               className="font-display font-semibold text-2xl tracking-tight text-text-primary"
             >
-              SA<span className="text-gradient-warm">.</span>
+              AD<span className="text-gradient-warm">.</span>
             </Link>
             <p className="mt-4 text-text-secondary text-sm leading-relaxed max-w-xs">
               London-based filmmaker crafting cinematic stories for brands, artists, and documentaries.
@@ -32,7 +32,7 @@ export function Footer({ settings }: FooterProps) {
               {[
                 { href: '/', label: 'Home' },
                 { href: '/about', label: 'About' },
-                { href: '/work', label: 'Service' },
+                { href: '/work', label: 'Services' },
                 { href: '/contact', label: 'Contact' },
               ].map((link) => (
                 <Link

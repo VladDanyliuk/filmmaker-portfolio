@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
-  { href: '/work', label: 'Service' },
+  { href: '/work', label: 'Services' },
   { href: '/contact', label: 'Contact' },
 ]
 
@@ -49,7 +49,7 @@ export function Navbar() {
             href="/"
             className="font-display font-semibold text-lg md:text-xl tracking-tight text-text-primary"
           >
-            SA<span className="text-gradient-warm">.</span>
+            AD<span className="text-gradient-warm">.</span>
           </Link>
 
           {/* Desktop nav — truly centered */}

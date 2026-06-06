@@ -94,7 +94,7 @@ export function HeroSection({ settings }: HeroSectionProps) {
           variants={itemVariants}
           className="text-xs md:text-sm uppercase tracking-[0.3em] text-accent-orange mb-6 md:mb-8"
         >
-          London · Filmmaker
+          London · Videographer
         </motion.p>
 
         <motion.h1

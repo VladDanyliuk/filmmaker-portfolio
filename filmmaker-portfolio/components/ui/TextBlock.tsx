@@ -27,7 +27,7 @@ const components: PortableTextComponents = {
   },
   types: {
     image: ({ value }) => {
-      const src = urlFor(value).width(1200).url()
+      const src = urlFor(value).width(1200).height(675).fit('crop').url()
       return (
         <figure className="my-8 md:my-12">
           <div className="relative w-full aspect-video overflow-hidden rounded-sm border-glass">

@@ -23,9 +23,14 @@ export function HeroSection({ settings }: HeroSectionProps) {
     return () => window.removeEventListener('resize', check)
   }, [])
 
-  const fallbackSrc = settings?.heroFallbackImage
-    ? urlFor(settings.heroFallbackImage).width(1920).height(1080).fit('crop').url()
+  const fallbackImage = settings?.heroFallbackImage
+  const fallbackSrc = fallbackImage
+    ? urlFor(fallbackImage).width(1920).fit('crop').url()
     : null
+  const hotspot = fallbackImage?.hotspot
+  const objectPosition = hotspot
+    ? `${Math.round(hotspot.x * 100)}% ${Math.round(hotspot.y * 100)}%`
+    : 'center'
 
   const containerVariants = {
     hidden: {},
@@ -66,6 +71,7 @@ export function HeroSection({ settings }: HeroSectionProps) {
           fill
           priority
           className="object-cover"
+          style={{ objectPosition }}
           sizes="100vw"
         />
       ) : (

@@ -21,7 +21,7 @@ export function Footer({ settings }: FooterProps) {
               AD<span className="text-gradient-warm">.</span>
             </Link>
             <p className="mt-4 text-text-secondary text-sm leading-relaxed max-w-xs">
-              London-based filmmaker crafting cinematic stories for brands, artists, and documentaries.
+              London-based videographer crafting cinematic stories for brands, artists, and documentaries.
             </p>
           </div>
 
@@ -84,7 +84,7 @@ export function Footer({ settings }: FooterProps) {
 
         <div className="border-t border-glass pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-text-secondary">
-            &copy; {year} Filmmaker Portfolio. All rights reserved.
+            &copy; {year} AD. All rights reserved.
           </p>
           <p className="text-xs text-text-secondary">
             Based in London, UK

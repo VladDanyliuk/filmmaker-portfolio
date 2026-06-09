@@ -13,7 +13,7 @@ interface HeroSectionProps {
 
 export function HeroSection({ settings }: HeroSectionProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [isMobile, setIsMobile] = useState(false)
+  const [isMobile, setIsMobile] = useState<boolean | null>(null)
   const [videoLoaded, setVideoLoaded] = useState(false)
 
   useEffect(() => {
@@ -22,6 +22,12 @@ export function HeroSection({ settings }: HeroSectionProps) {
     window.addEventListener('resize', check, { passive: true })
     return () => window.removeEventListener('resize', check)
   }, [])
+
+  useEffect(() => {
+    if (isMobile === false && videoRef.current) {
+      videoRef.current.play().catch(() => {})
+    }
+  }, [isMobile])
 
   const fallbackImage = settings?.heroFallbackImage
   const fallbackSrc = fallbackImage
@@ -51,32 +57,38 @@ export function HeroSection({ settings }: HeroSectionProps) {
   return (
     <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
       {/* ── Background ── */}
-      {!isMobile && settings?.heroVideoUrl ? (
-        <video
-          ref={videoRef}
-          src={settings.heroVideoUrl}
-          autoPlay
-          muted
-          loop
-          playsInline
-          onLoadedData={() => setVideoLoaded(true)}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-            videoLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-        />
-      ) : fallbackSrc ? (
-        <Image
-          src={fallbackSrc}
-          alt="Hero background"
-          fill
-          priority
-          className="object-cover"
-          style={{ objectPosition }}
-          sizes="100vw"
-        />
-      ) : (
-        <div className="absolute inset-0 bg-bg-secondary" />
-      )}
+      <div
+        className={`absolute inset-0 transition-opacity duration-700 ${
+          isMobile === null ? 'opacity-0' : 'opacity-100'
+        }`}
+      >
+        {isMobile === false && settings?.heroVideoUrl ? (
+          <video
+            ref={videoRef}
+            src={settings.heroVideoUrl}
+            autoPlay
+            muted
+            loop
+            playsInline
+            onLoadedData={() => setVideoLoaded(true)}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+              videoLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
+        ) : fallbackSrc ? (
+          <Image
+            src={fallbackSrc}
+            alt="Hero background"
+            fill
+            priority
+            className="object-cover"
+            style={{ objectPosition }}
+            sizes="100vw"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-bg-secondary" />
+        )}
+      </div>
 
       {/* ── Overlays ── */}
       <div className="absolute inset-0 bg-black/50" />

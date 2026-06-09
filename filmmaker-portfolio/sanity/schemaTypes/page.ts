@@ -62,6 +62,18 @@ export const page = defineType({
       ],
     }),
     defineField({
+      name: 'heroImage',
+      title: 'Hero Image',
+      type: 'image',
+      options: { hotspot: true },
+    }),
+    defineField({
+      name: 'portraitImage',
+      title: 'Portrait Image',
+      type: 'image',
+      options: { hotspot: true },
+    }),
+    defineField({
       name: 'seoTitle',
       title: 'SEO Title',
       type: 'string',

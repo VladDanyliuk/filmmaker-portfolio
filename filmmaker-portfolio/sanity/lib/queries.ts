@@ -22,6 +22,8 @@ export const pageBySlugQuery = groq`
     title,
     subtitle,
     content,
+    heroImage,
+    portraitImage,
     seoTitle,
     seoDescription
   }

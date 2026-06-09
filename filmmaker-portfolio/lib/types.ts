@@ -40,6 +40,8 @@ export interface Page {
   title: string
   subtitle: string
   content: PortableTextBlock[]
+  heroImage?: SanityImage
+  portraitImage?: SanityImage
   seoTitle?: string
   seoDescription?: string
 }

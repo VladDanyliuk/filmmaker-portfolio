@@ -4,8 +4,8 @@ import { visionTool } from '@sanity/vision'
 import { schemaTypes } from './sanity/schemaTypes'
 
 export default defineConfig({
-  name: 'filmmaker-portfolio',
-  title: 'Filmmaker Portfolio',
+  name: 'videographer-portfolio',
+  title: 'Videographer Portfolio',
   basePath: '/studio',
 
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,

@@ -288,7 +288,7 @@ export function AboutContent({ page }: { page: Page | null }) {
             <Reveal direction="right" className="md:pt-8">
               <div className="border-l-2 border-accent-orange pl-6 md:pl-8">
                 <p className="text-xs uppercase tracking-[0.3em] text-accent-orange mb-6">
-                  {page?.subtitle || 'The Filmmaker'}
+                  {page?.subtitle || 'The Videographer'}
                 </p>
                 {page?.content?.length ? (
                   <TextBlock content={page.content} />

@@ -8,10 +8,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings: SiteSettings | null = await client.fetch(siteSettingsQuery).catch(() => null)
   return {
     title: {
-      default: 'Filmmaker Portfolio',
-      template: '%s | Filmmaker Portfolio',
+      default: 'Videographer Portfolio',
+      template: '%s | Videographer Portfolio',
     },
-    description: settings?.siteDescription || 'London-based filmmaker & cinematographer',
+    description: settings?.siteDescription || 'London-based videographer & cinematographer',
     openGraph: {
       type: 'website',
       locale: 'en_GB',

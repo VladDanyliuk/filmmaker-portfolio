@@ -3,7 +3,7 @@ import { RevealOnScroll } from '@/components/motion/RevealOnScroll'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'Privacy policy for this filmmaker portfolio website.',
+  description: 'Privacy policy for this videographer portfolio website.',
 }
 
 export default function PrivacyPolicyPage() {
@@ -37,7 +37,7 @@ export default function PrivacyPolicyPage() {
                   1. Who We Are
                 </h2>
                 <p>
-                  This website is operated by a London-based filmmaker and cinematographer. If you have
+                  This website is operated by a London-based videographer and cinematographer. If you have
                   any questions about this privacy policy or how your data is handled, you can contact
                   us via the contact form on this site.
                 </p>

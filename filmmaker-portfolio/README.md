@@ -1,4 +1,4 @@
-# Filmmaker Portfolio
+# Videographer Portfolio
 
 A production-ready cinematic portfolio website built with Next.js 15, Sanity CMS, Tailwind CSS, and Framer Motion.
 

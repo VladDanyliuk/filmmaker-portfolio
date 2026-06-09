@@ -43,7 +43,7 @@ function userConfirmationHtml(name: string): string {
           </tr>
           <tr>
             <td style="padding:24px 40px;border-top:1px solid rgba(255,255,255,0.08);">
-              <p style="margin:0;font-size:12px;color:rgba(161,161,170,0.6);">London-based filmmaker. Available worldwide.</p>
+              <p style="margin:0;font-size:12px;color:rgba(161,161,170,0.6);">London-based videographer. Available worldwide.</p>
             </td>
           </tr>
         </table>

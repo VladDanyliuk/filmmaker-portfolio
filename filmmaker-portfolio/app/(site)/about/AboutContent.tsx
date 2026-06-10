@@ -108,20 +108,27 @@ function SkillCard({
   label,
   Icon,
   index,
+  isMobile,
 }: {
   label: string
   Icon: React.ComponentType<{ className?: string }>
   index: number
+  isMobile: boolean | null
 }) {
   const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, amount: 0.2 })
+  const inView = useInView(ref, { once: true, amount: 0.1 })
+
+  const duration = isMobile ? 0.4 : 0.6
+  const delay = isMobile ? index * 0.05 : index * 0.09
+
   return (
     <motion.div
       ref={ref}
       initial={{ opacity: 0, y: 15 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay: index * 0.09, ease }}
-      className="group flex flex-col items-center justify-center gap-3 px-5 py-7 md:py-8 rounded-xl border border-white/[0.08] bg-white/[0.03] cursor-default transition-all duration-300 hover:border-accent-orange/30 hover:bg-white/[0.06]"
+      transition={{ duration, delay, ease }}
+      style={{ willChange: 'opacity, transform' }}
+      className="group flex flex-col items-center justify-center gap-3 px-5 py-7 md:py-8 rounded-xl border border-white/[0.08] bg-white/[0.03] cursor-default transition-[border-color,background-color] duration-300 hover:border-accent-orange/30 hover:bg-white/[0.06]"
     >
       <Icon className="w-6 h-6 md:w-7 md:h-7 text-accent-orange" />
       <span className="text-sm md:text-base text-text-secondary group-hover:text-text-primary transition-colors duration-300 text-center leading-snug">
@@ -316,7 +323,7 @@ export function AboutContent({ page }: { page: Page | null }) {
           </Reveal>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
             {SKILLS.map(({ label, Icon }, i) => (
-              <SkillCard key={label} label={label} Icon={Icon} index={i} />
+              <SkillCard key={label} label={label} Icon={Icon} index={i} isMobile={isMobile} />
             ))}
           </div>
         </div>

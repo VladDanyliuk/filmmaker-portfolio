@@ -131,6 +131,18 @@ img, video {
   box-shadow: 0 0 24px rgba(255, 138, 61, 0.25);
 }
 
+/* ─── Autofill ───────────────────────────────────────────────────────────── */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #151518 inset !important;
+  -webkit-text-fill-color: #F5F5F2 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 .section-padding {
   padding-top: 5rem;
   padding-bottom: 5rem;

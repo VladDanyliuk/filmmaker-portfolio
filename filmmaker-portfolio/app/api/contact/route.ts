@@ -30,7 +30,7 @@ function userConfirmationHtml(name: string): string {
         <table width="100%" style="max-width:560px;background:#151518;border:1px solid rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;">
           <tr>
             <td style="padding:40px 40px 32px;border-bottom:1px solid rgba(255,255,255,0.08);">
-              <span style="font-size:22px;font-weight:600;color:#F5F5F2;letter-spacing:-0.02em;">SA<span style="color:#FF8A3D;">.</span></span>
+              <span style="font-size:22px;font-weight:600;color:#F5F5F2;letter-spacing:-0.02em;">AD<span style="color:#FF8A3D;">.</span></span>
             </td>
           </tr>
           <tr>

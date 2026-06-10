@@ -114,13 +114,13 @@ function SkillCard({
   index: number
 }) {
   const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, margin: '-40px 0px' })
+  const inView = useInView(ref, { once: true, amount: 0.2 })
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 15 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: index * 0.06, ease }}
+      transition={{ duration: 0.6, delay: index * 0.09, ease }}
       className="group flex flex-col items-center justify-center gap-3 px-5 py-7 md:py-8 rounded-xl border border-white/[0.08] bg-white/[0.03] cursor-default transition-all duration-300 hover:border-accent-orange/30 hover:bg-white/[0.06]"
     >
       <Icon className="w-6 h-6 md:w-7 md:h-7 text-accent-orange" />

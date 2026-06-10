@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 
 type FormState = 'idle' | 'loading' | 'success' | 'error'
 
@@ -54,7 +55,7 @@ export function ContactForm() {
   }
 
   const inputClass =
-    'w-full bg-bg-secondary border border-glass rounded-sm px-4 py-3 text-sm text-text-primary placeholder:text-text-secondary/50 focus:outline-none focus:border-accent-orange/40 transition-colors duration-200'
+    'w-full bg-bg-secondary border border-white/[0.08] rounded-xl px-4 py-3.5 text-[16px] text-text-primary placeholder:text-text-secondary/40 outline-none focus:bg-bg-secondary focus:border-accent-orange/50 focus:shadow-[0_0_0_3px_rgba(255,138,61,0.07)] transition-[border-color,box-shadow] duration-200 min-h-[48px]'
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -147,13 +148,16 @@ export function ContactForm() {
         <p className="text-xs text-red-400">Something went wrong. Please try again or email directly.</p>
       )}
 
-      <button
+      <motion.button
         type="submit"
         disabled={state === 'loading'}
-        className="w-full py-3.5 bg-accent-orange text-bg font-medium text-sm rounded-full hover:bg-accent-gold transition-all duration-300 hover:scale-[1.01] disabled:opacity-60 disabled:cursor-not-allowed glow-orange"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        transition={{ duration: 0.15, ease: 'easeOut' }}
+        className="w-full min-h-[48px] py-3.5 bg-accent-orange text-bg font-medium text-base rounded-xl hover:bg-accent-gold transition-colors duration-300 disabled:opacity-60 disabled:cursor-not-allowed glow-orange"
       >
         {state === 'loading' ? 'Sending…' : 'Send Message'}
-      </button>
+      </motion.button>
     </form>
   )
 }

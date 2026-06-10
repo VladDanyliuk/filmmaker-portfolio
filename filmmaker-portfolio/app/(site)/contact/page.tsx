@@ -21,7 +21,7 @@ export default async function ContactPage() {
   return (
     <>
       {/* Page Header */}
-      <section className="pt-32 md:pt-40 pb-16 md:pb-20 border-b border-glass">
+      <section className="pt-32 md:pt-40 pb-20 md:pb-28 border-b border-glass">
         <div className="container mx-auto px-6 md:px-10">
           <RevealOnScroll>
             <p className="text-xs uppercase tracking-widest text-accent-orange mb-4">
@@ -46,15 +46,21 @@ export default async function ContactPage() {
       {/* Content */}
       <section className="section-padding">
         <div className="container mx-auto px-6 md:px-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-20">
             {/* Left: info */}
             <RevealOnScroll direction="left">
               <div>
-                <h2 className="font-display text-2xl font-medium tracking-tight mb-8">
+                <div className="w-8 h-px bg-accent-orange mb-6" />
+                <h2 className="font-display text-2xl font-medium tracking-tight mb-7 md:mb-12">
                   Available for projects worldwide.
                 </h2>
 
-                <div className="space-y-6">
+                <div className="space-y-6 md:space-y-8">
+                  <div>
+                    <p className="text-xs uppercase tracking-widest text-text-secondary mb-1">Location</p>
+                    <p className="text-text-primary">London, UK</p>
+                  </div>
+
                   {settings?.contactEmail && (
                     <div>
                       <p className="text-xs uppercase tracking-widest text-text-secondary mb-1">Email</p>
@@ -66,11 +72,6 @@ export default async function ContactPage() {
                       </a>
                     </div>
                   )}
-
-                  <div>
-                    <p className="text-xs uppercase tracking-widest text-text-secondary mb-1">Location</p>
-                    <p className="text-text-primary">London, UK</p>
-                  </div>
 
                   {(settings?.instagramUrl || settings?.vimeoUrl) && (
                     <div>

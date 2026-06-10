@@ -57,8 +57,9 @@ export interface Project {
   title: string
   slug: string
   category: string
-  coverImage: SanityImage
+  coverImage?: SanityImage
   youtubeUrl?: string
+  vimeoUrl?: string
   description?: string
   year?: number
   client?: string

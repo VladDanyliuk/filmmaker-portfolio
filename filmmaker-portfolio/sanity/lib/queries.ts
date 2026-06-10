@@ -45,6 +45,7 @@ export const allProjectsQuery = groq`
     category,
     coverImage,
     youtubeUrl,
+    vimeoUrl,
     description,
     year,
     client,
@@ -59,7 +60,8 @@ export const featuredProjectsQuery = groq`
     "slug": slug.current,
     category,
     coverImage,
-    youtubeUrl
+    youtubeUrl,
+    vimeoUrl
   }
 `
 
@@ -71,6 +73,7 @@ export const projectBySlugQuery = groq`
     category,
     coverImage,
     youtubeUrl,
+    vimeoUrl,
     description,
     year,
     client

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { urlFor } from '@/sanity/lib/image'
@@ -19,13 +19,62 @@ function extractYouTubeId(url: string): string | null {
   return match?.[1] ?? null
 }
 
+function getCardThumbnail(
+  project: Project,
+  vimeoThumbnails: Record<string, string>
+): string | null {
+  if (project.coverImage) {
+    return urlFor(project.coverImage).width(800).height(540).fit('crop').url()
+  }
+  if (project.youtubeUrl) {
+    const id = extractYouTubeId(project.youtubeUrl)
+    if (id) return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`
+  }
+  if (project.vimeoUrl) {
+    return vimeoThumbnails[project._id] ?? null
+  }
+  return null
+}
+
 export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) {
   const [activeCategory, setActiveCategory] = useState('All')
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [vimeoThumbnails, setVimeoThumbnails] = useState<Record<string, string>>({})
 
-  const filtered = activeCategory === 'All'
-    ? projects
-    : projects.filter((p) => p.category.toLowerCase().replace(/-/g, ' ') === activeCategory.toLowerCase())
+  useEffect(() => {
+    const needsVimeo = projects.filter(
+      (p) => !p.coverImage && !p.youtubeUrl && p.vimeoUrl
+    )
+    if (!needsVimeo.length) return
+
+    Promise.all(
+      needsVimeo.map(async (p) => {
+        try {
+          const res = await fetch(
+            `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(p.vimeoUrl!)}`
+          )
+          if (!res.ok) return null
+          const data = await res.json()
+          return [p._id, data.thumbnail_url as string] as const
+        } catch {
+          return null
+        }
+      })
+    ).then((results) => {
+      const map: Record<string, string> = {}
+      results.forEach((r) => { if (r) map[r[0]] = r[1] })
+      setVimeoThumbnails(map)
+    })
+  }, [projects])
+
+  const filtered =
+    activeCategory === 'All'
+      ? projects
+      : projects.filter(
+          (p) =>
+            p.category.toLowerCase().replace(/-/g, ' ') ===
+            activeCategory.toLowerCase()
+        )
 
   return (
     <div>
@@ -55,9 +104,8 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
       >
         <AnimatePresence>
           {filtered.map((project, i) => {
-            const imgSrc = project.coverImage
-              ? urlFor(project.coverImage).width(800).height(540).fit('crop').url()
-              : null
+            const imgSrc = getCardThumbnail(project, vimeoThumbnails)
+            const hasVideo = !!(project.youtubeUrl || project.vimeoUrl)
 
             return (
               <motion.div
@@ -67,12 +115,12 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.97 }}
                 transition={{ duration: 0.4, delay: i * 0.05 }}
-                onClick={() => project.youtubeUrl && setSelectedProject(project)}
+                onClick={() => hasVideo && setSelectedProject(project)}
                 className={`group relative aspect-[4/3] overflow-hidden rounded-sm bg-bg-secondary border border-glass ${
-                  project.youtubeUrl ? 'cursor-pointer' : 'cursor-default'
+                  hasVideo ? 'cursor-pointer' : 'cursor-default'
                 }`}
               >
-                {imgSrc && (
+                {imgSrc ? (
                   <Image
                     src={imgSrc}
                     alt={project.title}
@@ -81,11 +129,19 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     loading="lazy"
                   />
+                ) : (
+                  /* Dark placeholder when no image source is available */
+                  <div className="absolute inset-0 flex items-center justify-center p-6">
+                    <p className="font-display text-text-secondary/30 text-sm text-center leading-relaxed">
+                      {project.title}
+                    </p>
+                  </div>
                 )}
+
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-400" />
 
-                {/* Play icon */}
-                {project.youtubeUrl && (
+                {/* Play icon — shown for both YouTube and Vimeo */}
+                {hasVideo && (
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="w-14 h-14 rounded-full border border-white/40 bg-bg/50 backdrop-blur-sm flex items-center justify-center">
                       <svg className="w-5 h-5 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
@@ -113,9 +169,9 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
         </AnimatePresence>
       </motion.div>
 
-      {/* Video lightbox */}
+      {/* Video lightbox — handles both YouTube and Vimeo */}
       <AnimatePresence>
-        {selectedProject?.youtubeUrl && (
+        {selectedProject && (selectedProject.youtubeUrl || selectedProject.vimeoUrl) && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -148,7 +204,10 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                   ✕
                 </button>
               </div>
-              <VideoEmbed url={selectedProject.youtubeUrl} title={selectedProject.title} />
+              <VideoEmbed
+                url={(selectedProject.youtubeUrl || selectedProject.vimeoUrl)!}
+                title={selectedProject.title}
+              />
             </motion.div>
           </motion.div>
         )}

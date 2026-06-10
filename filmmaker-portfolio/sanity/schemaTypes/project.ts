@@ -38,6 +38,7 @@ export const project = defineType({
       name: 'coverImage',
       title: 'Cover Image',
       type: 'image',
+      description: 'Optional — leave blank to auto-fetch thumbnail from YouTube or Vimeo.',
       options: { hotspot: true },
       fields: [
         {
@@ -46,13 +47,18 @@ export const project = defineType({
           type: 'string',
         },
       ],
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'youtubeUrl',
-      title: 'YouTube URL (optional)',
+      title: 'YouTube URL',
       type: 'url',
       description: 'Full YouTube video URL, e.g. https://www.youtube.com/watch?v=XXXXX',
+    }),
+    defineField({
+      name: 'vimeoUrl',
+      title: 'Vimeo URL',
+      type: 'url',
+      description: 'Full Vimeo video URL, e.g. https://vimeo.com/XXXXXXX',
     }),
     defineField({
       name: 'description',

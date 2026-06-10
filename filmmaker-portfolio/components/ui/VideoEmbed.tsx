@@ -8,15 +8,25 @@ function getYouTubeId(url: string): string | null {
   return match?.[1] ?? null
 }
 
-export function VideoEmbed({ url, title = 'Video' }: VideoEmbedProps) {
-  const videoId = getYouTubeId(url)
+function getVimeoId(url: string): string | null {
+  const match = url.match(/vimeo\.com\/(?:video\/)?(\d+)/)
+  return match?.[1] ?? null
+}
 
-  if (!videoId) return null
+export function VideoEmbed({ url, title = 'Video' }: VideoEmbedProps) {
+  const youtubeId = getYouTubeId(url)
+  const vimeoId = youtubeId ? null : getVimeoId(url)
+
+  if (!youtubeId && !vimeoId) return null
+
+  const src = youtubeId
+    ? `https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1`
+    : `https://player.vimeo.com/video/${vimeoId}?autoplay=1&color=FF8A3D&title=0&byline=0&portrait=0`
 
   return (
     <div className="relative w-full aspect-video rounded-sm overflow-hidden bg-bg-secondary border border-glass">
       <iframe
-        src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`}
+        src={src}
         title={title}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen

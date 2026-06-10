@@ -24,7 +24,7 @@ function getCardThumbnail(
   vimeoThumbnails: Record<string, string>
 ): string | null {
   if (project.coverImage) {
-    return urlFor(project.coverImage).width(800).height(540).fit('crop').url()
+    return urlFor(project.coverImage).width(800).url()
   }
   if (project.youtubeUrl) {
     const id = extractYouTubeId(project.youtubeUrl)
@@ -116,7 +116,7 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                 exit={{ opacity: 0, scale: 0.97 }}
                 transition={{ duration: 0.4, delay: i * 0.05 }}
                 onClick={() => hasVideo && setSelectedProject(project)}
-                className={`group relative aspect-[4/3] overflow-hidden rounded-sm bg-bg-secondary border border-glass ${
+                className={`group relative aspect-video overflow-hidden rounded-sm bg-bg-secondary border border-glass ${
                   hasVideo ? 'cursor-pointer' : 'cursor-default'
                 }`}
               >
@@ -125,7 +125,7 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                     src={imgSrc}
                     alt={project.title}
                     fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                    className="object-contain transition-transform duration-700 group-hover:scale-[1.04]"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     loading="lazy"
                   />

@@ -4,6 +4,7 @@ import type { SiteSettings } from '@/lib/types'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { CookieBanner } from '@/components/ui/CookieBanner'
+import { ScrollToTop } from '@/components/layout/ScrollToTop'
 
 export default async function SiteLayout({
   children,
@@ -14,6 +15,7 @@ export default async function SiteLayout({
 
   return (
     <>
+      <ScrollToTop />
       <Navbar />
       <main>{children}</main>
       <Footer settings={settings!} />

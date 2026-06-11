@@ -1,11 +1,23 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 
 type FormState = 'idle' | 'loading' | 'success' | 'error'
 
 export function ContactForm() {
+  // Page-level scroll reset fallback for iOS Safari — fires on every mount
+  // (i.e. every navigation to "/contact").
+  useEffect(() => {
+    document.documentElement.style.scrollBehavior = 'auto'
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
+    window.scrollTo(0, 0)
+    requestAnimationFrame(() => {
+      document.documentElement.style.scrollBehavior = ''
+    })
+  }, [])
+
   const [state, setState] = useState<FormState>('idle')
   const [form, setForm] = useState({
     name: '',

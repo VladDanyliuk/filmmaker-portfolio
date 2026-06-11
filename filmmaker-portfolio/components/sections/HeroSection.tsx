@@ -16,6 +16,19 @@ export function HeroSection({ settings }: HeroSectionProps) {
   const [isMobile, setIsMobile] = useState<boolean | null>(null)
   const [videoLoaded, setVideoLoaded] = useState(false)
 
+  // Page-level scroll reset fallback for iOS Safari — fires on every mount
+  // (i.e. every navigation to "/"), catches cases where the layout-level
+  // ScrollToTop component doesn't fire in time.
+  useEffect(() => {
+    document.documentElement.style.scrollBehavior = 'auto'
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
+    window.scrollTo(0, 0)
+    requestAnimationFrame(() => {
+      document.documentElement.style.scrollBehavior = ''
+    })
+  }, [])
+
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768)
     check()

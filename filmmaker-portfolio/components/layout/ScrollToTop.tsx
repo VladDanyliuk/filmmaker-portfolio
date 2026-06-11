@@ -4,42 +4,63 @@ import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 
 function resetScroll() {
-  // Direct assignment bypasses CSS scroll-behavior: smooth — always instant.
-  // documentElement covers standard browsers; body covers iOS Safari, which
-  // tracks the viewport scroll on <body> rather than <html>.
+  // Inline style overrides the Tailwind scroll-smooth class (scroll-behavior: smooth)
+  // on <html> so that all resets below are guaranteed instant on iOS Safari.
+  document.documentElement.style.scrollBehavior = 'auto'
+
   document.documentElement.scrollTop = 0
-  document.body.scrollTop = 0
-  // window.scrollTo as an additional reset. 'instant' prevents any
-  // animated scroll that scroll-behavior: smooth would otherwise trigger.
-  try {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior })
-  } catch {
-    window.scrollTo(0, 0)
-  }
+  document.body.scrollTop = 0  // iOS Safari sometimes tracks scroll on <body>
+  window.scrollTo(0, 0)
+
+  // <main> can become the scroll container on iOS when body has overflow set
+  const main = document.querySelector('main')
+  if (main) main.scrollTop = 0
+
+  // Restore CSS-defined scroll-behavior after the frame so in-page anchor
+  // links remain smooth.
+  requestAnimationFrame(() => {
+    document.documentElement.style.scrollBehavior = ''
+  })
 }
 
 export function ScrollToTop() {
   const pathname = usePathname()
 
+  // Fires on every client-side route change (push, replace, and popstate
+  // that Next.js handles via the router).
   useEffect(() => {
-    // Immediate attempt — catches most desktop navigations.
     resetScroll()
-    // Deferred attempt — iOS Safari needs a frame after the route transition
+    // Deferred retry: iOS Safari needs a frame after the route transition
     // before the scroll position can actually be changed.
-    const id = setTimeout(resetScroll, 50)
+    const id = setTimeout(resetScroll, 60)
     return () => clearTimeout(id)
   }, [pathname])
 
+  // Belt-and-suspenders for browser back/forward on mobile browsers that
+  // may fire popstate before usePathname updates.
   useEffect(() => {
-    // Belt-and-suspenders for browser back/forward on mobile.
-    // usePathname already re-fires on popstate, but this ensures the
-    // deferred reset also runs for history navigations.
     const onPopState = () => {
       resetScroll()
-      setTimeout(resetScroll, 50)
+      setTimeout(resetScroll, 60)
     }
     window.addEventListener('popstate', onPopState)
     return () => window.removeEventListener('popstate', onPopState)
+  }, [])
+
+  // iOS Safari Back-Forward Cache: when a cached page is restored, the React
+  // tree is NOT re-executed and usePathname does NOT re-fire. Only the
+  // pageshow event (with persisted=true) reliably fires after BFCache
+  // restoration — and crucially, AFTER the browser restores the old scroll
+  // position, so this must run last.
+  useEffect(() => {
+    const onPageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) {
+        resetScroll()
+        setTimeout(resetScroll, 60)
+      }
+    }
+    window.addEventListener('pageshow', onPageShow)
+    return () => window.removeEventListener('pageshow', onPageShow)
   }, [])
 
   return null

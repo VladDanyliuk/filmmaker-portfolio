@@ -60,6 +60,7 @@ export interface Project {
   coverImage?: SanityImage
   youtubeUrl?: string
   vimeoUrl?: string
+  role?: string
   description?: string
   year?: number
   client?: string

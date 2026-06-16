@@ -43,6 +43,7 @@ export const allProjectsQuery = groq`
     title,
     "slug": slug.current,
     category,
+    role,
     coverImage,
     youtubeUrl,
     vimeoUrl,
@@ -59,6 +60,7 @@ export const featuredProjectsQuery = groq`
     title,
     "slug": slug.current,
     category,
+    role,
     coverImage,
     youtubeUrl,
     vimeoUrl
@@ -71,6 +73,7 @@ export const projectBySlugQuery = groq`
     title,
     "slug": slug.current,
     category,
+    role,
     coverImage,
     youtubeUrl,
     vimeoUrl,

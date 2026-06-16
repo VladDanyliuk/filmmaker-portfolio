@@ -12,7 +12,15 @@ interface GalleryGridProps {
   showFilters?: boolean
 }
 
-const CATEGORIES = ['All', 'Commercial', 'Documentary', 'Music Video', 'Short Film', 'Brand Film', 'Wedding']
+const CATEGORIES = [
+  'All',
+  'Commercial',
+  'Documentary',
+  'Music Video',
+  'Short Film',
+  'Brand Film',
+  'Wedding',
+]
 
 function extractYouTubeId(url: string): string | null {
   const match = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/)
@@ -24,7 +32,7 @@ function getCardThumbnail(
   vimeoThumbnails: Record<string, string>
 ): string | null {
   if (project.coverImage) {
-    return urlFor(project.coverImage).width(800).url()
+    return urlFor(project.coverImage).width(900).url()
   }
   if (project.youtubeUrl) {
     const id = extractYouTubeId(project.youtubeUrl)
@@ -78,32 +86,31 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
 
   return (
     <div>
-      {/* Filters */}
+      {/* ── Filters ────────────────────────────────────────────────────────── */}
       {showFilters && (
-        <div className="flex flex-wrap gap-2 md:gap-3 mb-10 md:mb-14">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-1.5 text-xs tracking-wide rounded-full border transition-all duration-200 ${
-                activeCategory === cat
-                  ? 'border-accent-orange text-accent-orange bg-accent-orange/10'
-                  : 'border-glass text-text-secondary hover:border-white/20 hover:text-text-primary'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        <div className="overflow-x-auto pb-1 mb-10 md:mb-14 -mx-6 px-6 md:mx-0 md:px-0">
+          <div className="flex gap-2 min-w-max md:min-w-0 md:flex-wrap">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-4 py-1.5 text-xs tracking-wide rounded-full border transition-all duration-200 whitespace-nowrap ${
+                  activeCategory === cat
+                    ? 'bg-accent-orange border-accent-orange text-bg font-medium'
+                    : 'border-white/[0.12] text-text-secondary hover:border-white/30 hover:text-text-primary'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
-      {/* Grid */}
-      <motion.div
-        layout
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
-      >
-        <AnimatePresence>
-          {filtered.map((project, i) => {
+      {/* ── Grid ───────────────────────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <AnimatePresence mode="popLayout">
+          {filtered.map((project) => {
             const imgSrc = getCardThumbnail(project, vimeoThumbnails)
             const hasVideo = !!(project.youtubeUrl || project.vimeoUrl)
 
@@ -111,65 +118,97 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
               <motion.div
                 key={project._id}
                 layout
-                initial={{ opacity: 0, scale: 0.97 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.97 }}
-                transition={{ duration: 0.4, delay: i * 0.05 }}
-                onClick={() => hasVideo && setSelectedProject(project)}
-                className={`group relative aspect-video overflow-hidden rounded-sm bg-bg-secondary border border-glass ${
-                  hasVideo ? 'cursor-pointer' : 'cursor-default'
-                }`}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
               >
-                {imgSrc ? (
-                  <Image
-                    src={imgSrc}
-                    alt={project.title}
-                    fill
-                    className="object-contain transition-transform duration-700 group-hover:scale-[1.04]"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    loading="lazy"
-                  />
-                ) : (
-                  /* Dark placeholder when no image source is available */
-                  <div className="absolute inset-0 flex items-center justify-center p-6">
-                    <p className="font-display text-text-secondary/30 text-sm text-center leading-relaxed">
+                <article className="group rounded-xl overflow-hidden bg-bg-secondary border border-white/[0.08] transition-all duration-300 hover:border-white/[0.16] hover:shadow-[0_8px_32px_rgba(0,0,0,0.45)]">
+
+                  {/* ── Thumbnail ──────────────────────────────────────────── */}
+                  <div
+                    className={`relative aspect-video overflow-hidden bg-bg ${hasVideo ? 'cursor-pointer' : ''}`}
+                    onClick={() => hasVideo && setSelectedProject(project)}
+                  >
+                    {imgSrc ? (
+                      <Image
+                        src={imgSrc}
+                        alt={project.title}
+                        fill
+                        className="object-contain transition-transform duration-500 group-hover:scale-[1.03]"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center p-6">
+                        <p className="font-display text-text-secondary/25 text-sm text-center">
+                          {project.title}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Hover overlay — title only */}
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/45 transition-colors duration-300" />
+                    {hasVideo && (
+                      <div className="absolute inset-0 flex items-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                        <p className="font-display text-sm font-medium text-white/90 leading-snug line-clamp-2">
+                          {project.title}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Play button */}
+                    {hasVideo && (
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="w-14 h-14 rounded-full border border-white/40 bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                          <svg className="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ── Metadata ───────────────────────────────────────────── */}
+                  <div className="px-5 py-4">
+                    <h3 className="font-display text-lg font-medium text-text-primary leading-snug">
                       {project.title}
-                    </p>
-                  </div>
-                )}
+                    </h3>
 
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-400" />
+                    {(project.client || project.role) && (
+                      <div className="mt-1 space-y-0.5">
+                        {project.client && (
+                          <p className="text-sm text-text-secondary">{project.client}</p>
+                        )}
+                        {project.role && (
+                          <p className="text-xs text-text-secondary/55">{project.role}</p>
+                        )}
+                      </div>
+                    )}
 
-                {/* Play icon — shown for both YouTube and Vimeo */}
-                {hasVideo && (
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="w-14 h-14 rounded-full border border-white/40 bg-bg/50 backdrop-blur-sm flex items-center justify-center">
-                      <svg className="w-5 h-5 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
+                    <div className="flex items-center gap-3 mt-3">
+                      <span className="text-xs uppercase tracking-wider text-accent-orange">
+                        {project.category}
+                      </span>
+                      {project.year && (
+                        <span className="text-xs text-text-secondary/45">{project.year}</span>
+                      )}
                     </div>
-                  </div>
-                )}
 
-                {/* Info overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                  <p className="text-xs uppercase tracking-widest text-accent-orange mb-1">
-                    {project.category}
-                  </p>
-                  <p className="font-display text-base font-medium text-white">
-                    {project.title}
-                  </p>
-                  {project.client && (
-                    <p className="text-xs text-white/60 mt-0.5">{project.client}</p>
-                  )}
-                </div>
+                    {project.description && (
+                      <p className="text-sm text-text-secondary/65 mt-3 line-clamp-2 leading-relaxed">
+                        {project.description}
+                      </p>
+                    )}
+                  </div>
+                </article>
               </motion.div>
             )
           })}
         </AnimatePresence>
-      </motion.div>
+      </div>
 
-      {/* Video lightbox — handles both YouTube and Vimeo */}
+      {/* ── Lightbox ───────────────────────────────────────────────────────── */}
       <AnimatePresence>
         {selectedProject && (selectedProject.youtubeUrl || selectedProject.vimeoUrl) && (
           <motion.div
@@ -183,7 +222,7 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.25 }}
               onClick={(e) => e.stopPropagation()}
               className="w-full max-w-4xl"
             >
@@ -198,7 +237,7 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                 </div>
                 <button
                   onClick={() => setSelectedProject(null)}
-                  className="w-9 h-9 flex items-center justify-center rounded-full border border-glass text-text-secondary hover:text-text-primary hover:border-white/20 transition-colors duration-200"
+                  className="w-9 h-9 flex items-center justify-center rounded-full border border-white/[0.12] text-text-secondary hover:text-text-primary hover:border-white/25 transition-colors duration-200"
                   aria-label="Close"
                 >
                   ✕

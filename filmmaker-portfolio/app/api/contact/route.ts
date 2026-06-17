@@ -1,18 +1,95 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import { Ratelimit } from '@upstash/ratelimit'
+import { Redis } from '@upstash/redis'
 
 const WINDOW_MS = 15 * 60 * 1000
 const MAX_REQUESTS = 3
 
-const rateLimitMap = new Map<string, number[]>()
+// ── Rate limiting ──────────────────────────────────────────────────────────
+// Durable, cross-instance rate limiting via Upstash Redis. Required in
+// production: the previous in-memory Map reset on every Vercel cold start and
+// was not shared across serverless instances, so it provided no real limit.
+//
+// Configure via env vars (see .env.local.example):
+//   UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN
+//
+// If those are absent (e.g. local dev), we fall back to a best-effort in-memory
+// limiter so the form still works locally — but that fallback is NOT durable
+// and must not be relied on in production.
+const hasUpstash =
+  !!process.env.UPSTASH_REDIS_REST_URL && !!process.env.UPSTASH_REDIS_REST_TOKEN
 
-function isRateLimited(ip: string): boolean {
+const ratelimit = hasUpstash
+  ? new Ratelimit({
+      redis: Redis.fromEnv(),
+      limiter: Ratelimit.slidingWindow(MAX_REQUESTS, '15 m'),
+      prefix: 'contact-form',
+      analytics: false,
+    })
+  : null
+
+const memoryMap = new Map<string, number[]>()
+
+function isRateLimitedInMemory(ip: string): boolean {
   const now = Date.now()
-  const timestamps = (rateLimitMap.get(ip) ?? []).filter((t) => now - t < WINDOW_MS)
+  const timestamps = (memoryMap.get(ip) ?? []).filter((t) => now - t < WINDOW_MS)
   if (timestamps.length >= MAX_REQUESTS) return true
   timestamps.push(now)
-  rateLimitMap.set(ip, timestamps)
+  memoryMap.set(ip, timestamps)
   return false
+}
+
+async function isRateLimited(ip: string): Promise<boolean> {
+  if (ratelimit) {
+    const { success } = await ratelimit.limit(ip)
+    return !success
+  }
+  if (process.env.NODE_ENV === 'production') {
+    console.warn(
+      '[contact] Upstash env vars missing — rate limiting is in-memory only and not durable.'
+    )
+  }
+  return isRateLimitedInMemory(ip)
+}
+
+// ── Input validation ───────────────────────────────────────────────────────
+// Format validation is the minimum bar for a public contact form: it blocks
+// malformed addresses and the most common throwaway/spam domains before we ask
+// Resend to send anything. Full ownership verification (double opt-in) is out
+// of scope here — a confirmation email to an unverified address is acceptable
+// for a contact form, but only once the address is at least well-formed.
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+// Common disposable / throwaway email providers. Not exhaustive — a best-effort
+// inline blocklist that needs no external API call.
+const DISPOSABLE_DOMAINS = new Set([
+  'mailinator.com',
+  'guerrillamail.com',
+  'guerrillamail.info',
+  'sharklasers.com',
+  '10minutemail.com',
+  'tempmail.com',
+  'temp-mail.org',
+  'throwawaymail.com',
+  'yopmail.com',
+  'getnada.com',
+  'trashmail.com',
+  'dispostable.com',
+  'maildrop.cc',
+  'fakeinbox.com',
+  'mailnesia.com',
+  'mohmal.com',
+  'emailondeck.com',
+  'spam4.me',
+])
+
+function isValidEmail(email: string): boolean {
+  if (email.length > 254) return false
+  if (!EMAIL_REGEX.test(email)) return false
+  const domain = email.split('@')[1]?.toLowerCase()
+  if (!domain || DISPOSABLE_DOMAINS.has(domain)) return false
+  return true
 }
 
 function userConfirmationHtml(name: string): string {
@@ -139,7 +216,7 @@ function adminNotificationHtml(data: {
 export async function POST(request: Request) {
   try {
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
-    if (isRateLimited(ip)) {
+    if (await isRateLimited(ip)) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
     }
 
@@ -174,6 +251,13 @@ export async function POST(request: Request) {
 
     if (!name?.trim() || !email?.trim() || !message?.trim()) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+    }
+
+    // Validate email format before sending anything. This prevents the form
+    // from being used to fire confirmation emails at malformed/throwaway
+    // addresses and from injecting junk into the admin notification + mailto links.
+    if (!isValidEmail(email.trim())) {
+      return NextResponse.json({ error: 'Invalid email address' }, { status: 400 })
     }
 
     const [confirmation, notification] = await Promise.all([

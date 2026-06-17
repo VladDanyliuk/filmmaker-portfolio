@@ -22,9 +22,16 @@ const nextConfig: NextConfig = {
         pathname: '/vi/**',
       },
       {
+        // Vimeo oEmbed thumbnails. The plain thumbnail_url uses /video/, but the
+        // "with play button" variant uses /filter/overlay, so allow any path.
         protocol: 'https',
         hostname: 'i.vimeocdn.com',
-        pathname: '/video/**',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'f.vimeocdn.com',
+        pathname: '/**',
       },
     ],
   },

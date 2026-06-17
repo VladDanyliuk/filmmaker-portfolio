@@ -34,21 +34,71 @@ function extractYouTubeId(url: string): string | null {
   return match?.[1] ?? null
 }
 
-function getCardThumbnail(
+// Returns an ordered list of thumbnail URLs to try. Each is attempted in turn;
+// when one fails to load (onError) the next is used, and when the list is
+// exhausted a text placeholder is shown. This matters for YouTube: not every
+// video has a maxresdefault.jpg frame, so we fall back to hqdefault.jpg (which
+// effectively always exists).
+function getThumbnailCandidates(
   project: Project,
   vimeoThumbnails: Record<string, string>
-): string | null {
+): string[] {
   if (project.coverImage) {
-    return urlFor(project.coverImage).width(900).url()
+    return [urlFor(project.coverImage).width(900).url()]
   }
   if (project.youtubeUrl) {
     const id = extractYouTubeId(project.youtubeUrl)
-    if (id) return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`
+    if (id) {
+      return [
+        `https://img.youtube.com/vi/${id}/maxresdefault.jpg`,
+        `https://img.youtube.com/vi/${id}/hqdefault.jpg`,
+      ]
+    }
   }
   if (project.vimeoUrl) {
-    return vimeoThumbnails[project._id] ?? null
+    const thumb = vimeoThumbnails[project._id]
+    return thumb ? [thumb] : []
   }
-  return null
+  return []
+}
+
+function Thumbnail({
+  candidates,
+  title,
+  isFeatured,
+}: {
+  candidates: string[]
+  title: string
+  isFeatured: boolean
+}) {
+  const [index, setIndex] = useState(0)
+
+  // Reset when the candidate list changes (e.g. a Vimeo thumbnail arrives async).
+  useEffect(() => {
+    setIndex(0)
+  }, [candidates])
+
+  const src = candidates[index]
+
+  if (!src) {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center p-6">
+        <p className="font-display text-text-secondary/25 text-sm text-center">{title}</p>
+      </div>
+    )
+  }
+
+  return (
+    <Image
+      src={src}
+      alt={title}
+      fill
+      className="object-contain transition-transform duration-500 group-hover:scale-[1.03]"
+      sizes={isFeatured ? '100vw' : '(max-width: 768px) 100vw, 50vw'}
+      loading="lazy"
+      onError={() => setIndex((i) => i + 1)}
+    />
+  )
 }
 
 export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) {
@@ -119,11 +169,18 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
         </div>
       )}
 
+      {/* ── Empty state — e.g. the default category has no projects yet ─────── */}
+      {showFilters && filtered.length === 0 && (
+        <p className="text-text-secondary/60 text-center py-16">
+          No projects in this category yet.
+        </p>
+      )}
+
       {/* ── Editorial grid — featured + secondary ──────────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-14">
         <AnimatePresence mode="popLayout">
           {filtered.map((project, i) => {
-            const imgSrc = getCardThumbnail(project, vimeoThumbnails)
+            const candidates = getThumbnailCandidates(project, vimeoThumbnails)
             const hasVideo = !!(project.youtubeUrl || project.vimeoUrl)
             const isFeatured = i === 0
 
@@ -145,22 +202,11 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                     className={`relative aspect-video overflow-hidden bg-bg ${hasVideo ? 'cursor-pointer' : ''}`}
                     onClick={() => hasVideo && setSelectedProject(project)}
                   >
-                    {imgSrc ? (
-                      <Image
-                        src={imgSrc}
-                        alt={project.title}
-                        fill
-                        className="object-contain transition-transform duration-500 group-hover:scale-[1.03]"
-                        sizes={isFeatured ? '100vw' : '(max-width: 768px) 100vw, 50vw'}
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center p-6">
-                        <p className="font-display text-text-secondary/25 text-sm text-center">
-                          {project.title}
-                        </p>
-                      </div>
-                    )}
+                    <Thumbnail
+                      candidates={candidates}
+                      title={project.title}
+                      isFeatured={isFeatured}
+                    />
 
                     {/* Overlay */}
                     <div className="absolute inset-0 bg-black/0 md:group-hover:bg-black/45 transition-colors duration-300" />

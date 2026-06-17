@@ -13,12 +13,12 @@ interface GalleryGridProps {
 }
 
 const CATEGORIES = [
+  'Wedding',
   'Commercial',
   'Documentary',
   'Music Video',
   'Short Film',
   'Brand Film',
-  'Wedding',
 ]
 
 function formatCategory(slug: string): string {
@@ -82,9 +82,9 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
     })
   }, [projects])
 
-  const filtered = projects.filter(
-    (p) => formatCategory(p.category) === activeCategory
-  )
+  const filtered = showFilters
+    ? projects.filter((p) => formatCategory(p.category) === activeCategory)
+    : projects
 
   return (
     <div>
@@ -172,33 +172,39 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                   </div>
 
                   {/* ── Metadata ───────────────────────────────────────────── */}
-                  <div className="px-5 py-4">
+                  <div className="px-5 py-4 space-y-3">
                     <h3 className="font-display text-lg font-medium text-text-primary leading-snug">
                       {project.title}
                     </h3>
 
                     {(project.client || project.role) && (
-                      <div className="mt-1 space-y-0.5">
+                      <div className="space-y-1 text-sm">
                         {project.client && (
-                          <p className="text-sm text-text-secondary">{project.client}</p>
+                          <p>
+                            <span className="text-text-secondary/50">Client: </span>
+                            <span className="text-text-primary">{project.client}</span>
+                          </p>
                         )}
                         {project.role && (
-                          <p className="text-xs text-text-secondary/55">{project.role}</p>
+                          <p>
+                            <span className="text-text-secondary/50">Role: </span>
+                            <span className="text-text-primary">{project.role}</span>
+                          </p>
                         )}
                       </div>
                     )}
 
-                    <div className="flex items-center gap-3 mt-3">
+                    <div className="flex items-center gap-3">
                       <span className="text-xs uppercase tracking-wider text-accent-orange">
                         {formatCategory(project.category)}
                       </span>
                       {project.year && (
-                        <span className="text-xs text-text-secondary/45">{project.year}</span>
+                        <span className="text-xs text-text-secondary/45">Year: {project.year}</span>
                       )}
                     </div>
 
                     {project.description && (
-                      <p className="text-sm text-text-secondary/65 mt-3 line-clamp-2 leading-relaxed">
+                      <p className="text-sm text-text-secondary/65 line-clamp-2 leading-relaxed">
                         {project.description}
                       </p>
                     )}
@@ -249,6 +255,11 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                 url={(selectedProject.youtubeUrl || selectedProject.vimeoUrl)!}
                 title={selectedProject.title}
               />
+              {selectedProject.description && (
+                <p className="text-sm text-text-secondary/80 mt-4 leading-relaxed whitespace-pre-line">
+                  {selectedProject.description}
+                </p>
+              )}
             </motion.div>
           </motion.div>
         )}

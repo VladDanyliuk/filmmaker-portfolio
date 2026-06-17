@@ -8,9 +8,12 @@ import { RevealOnScroll } from '@/components/motion/RevealOnScroll'
 
 export const revalidate = 60
 
-export const metadata: Metadata = {
-  title: 'Services',
-  description: 'A curated selection of cinematic films, commercials, and documentaries.',
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await client.fetch<Page>(pageBySlugQuery, { slug: 'work' }).catch(() => null)
+  return {
+    title: page?.seoTitle || 'Services',
+    description: page?.seoDescription || 'A curated selection of cinematic films, commercials, and documentaries.',
+  }
 }
 
 export default async function WorkPage() {

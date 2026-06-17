@@ -7,9 +7,12 @@ import { ContactForm } from '@/components/ui/ContactForm'
 
 export const revalidate = 60
 
-export const metadata: Metadata = {
-  title: 'Contact',
-  description: 'Book a call or get in touch for your next project.',
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await client.fetch<Page>(pageBySlugQuery, { slug: 'contact' }).catch(() => null)
+  return {
+    title: page?.seoTitle || 'Contact',
+    description: page?.seoDescription || 'Book a call or get in touch for your next project.',
+  }
 }
 
 export default async function ContactPage() {

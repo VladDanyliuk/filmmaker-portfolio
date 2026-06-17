@@ -1,9 +1,15 @@
 import type { Metadata } from 'next'
+import { client } from '@/sanity/lib/client'
+import { pageBySlugQuery } from '@/sanity/lib/queries'
+import type { Page } from '@/lib/types'
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll'
 
-export const metadata: Metadata = {
-  title: 'Privacy Policy',
-  description: 'Privacy policy for this videographer portfolio website.',
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await client.fetch<Page>(pageBySlugQuery, { slug: 'privacy-policy' }).catch(() => null)
+  return {
+    title: page?.seoTitle || 'Privacy Policy',
+    description: page?.seoDescription || 'Privacy policy for this videographer portfolio website.',
+  }
 }
 
 export default function PrivacyPolicyPage() {

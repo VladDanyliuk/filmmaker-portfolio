@@ -54,16 +54,22 @@ export default async function ServicesPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/50 to-bg" />
           <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
-            <p className="text-xs uppercase tracking-[0.3em] text-accent-orange mb-4 md:mb-5">
-              Portfolio
-            </p>
-            <h1 className="font-display text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-medium tracking-tight leading-[1.05]">
-              {page?.title || 'Services'}
-            </h1>
-            {page?.subtitle && (
-              <p className="mt-4 md:mt-6 text-text-secondary text-base md:text-lg max-w-xl mx-auto leading-relaxed">
-                {page.subtitle}
+            <RevealOnScroll duration={0.8}>
+              <p className="text-xs uppercase tracking-[0.3em] text-accent-orange mb-4 md:mb-5">
+                Portfolio
               </p>
+            </RevealOnScroll>
+            <RevealOnScroll delay={0.15} duration={0.8}>
+              <h1 className="font-display text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-medium tracking-tight leading-[1.05]">
+                {page?.title || 'Services'}
+              </h1>
+            </RevealOnScroll>
+            {page?.subtitle && (
+              <RevealOnScroll delay={0.3} duration={0.8}>
+                <p className="mt-4 md:mt-6 text-text-secondary text-base md:text-lg max-w-xl mx-auto leading-relaxed">
+                  {page.subtitle}
+                </p>
+              </RevealOnScroll>
             )}
           </div>
         </section>
@@ -99,7 +105,7 @@ export default async function ServicesPage() {
           <div className="container mx-auto px-6 md:px-10 max-w-6xl">
             {portraitSrc && page?.content?.length ? (
               <div className="grid md:grid-cols-2 gap-10 md:gap-16 lg:gap-24 items-center">
-                <RevealOnScroll>
+                <RevealOnScroll direction="left">
                   <div className="relative aspect-[3/4] overflow-hidden rounded-sm">
                     <Image
                       src={portraitSrc}
@@ -111,7 +117,7 @@ export default async function ServicesPage() {
                     />
                   </div>
                 </RevealOnScroll>
-                <RevealOnScroll delay={0.1}>
+                <RevealOnScroll direction="right">
                   <div className="border-l-2 border-accent-orange pl-6 md:pl-8">
                     <TextBlock content={page.content} />
                   </div>

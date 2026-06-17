@@ -361,7 +361,7 @@ export function AboutContent({ page }: { page: Page | null }) {
         primaryLabel="Get in Touch"
         primaryHref="/contact"
         secondaryLabel="View Work"
-        secondaryHref="/work"
+        secondaryHref="/services"
       />
     </>
   )

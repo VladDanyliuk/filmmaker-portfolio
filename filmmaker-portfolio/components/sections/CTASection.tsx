@@ -16,7 +16,7 @@ export function CTASection({
   primaryLabel = 'Start a Project',
   primaryHref = '/contact',
   secondaryLabel = 'Services',
-  secondaryHref = '/work',
+  secondaryHref = '/services',
 }: CTASectionProps) {
   return (
     <section className="section-padding bg-bg-secondary border-t border-glass">

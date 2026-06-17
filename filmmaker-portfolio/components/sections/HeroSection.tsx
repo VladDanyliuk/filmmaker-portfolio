@@ -144,7 +144,7 @@ export function HeroSection({ settings }: HeroSectionProps) {
         >
           {settings?.heroPrimaryCtaText && (
             <Link
-              href={settings.heroPrimaryCtaUrl || '/work'}
+              href={settings.heroPrimaryCtaUrl || '/services'}
               className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-accent-orange text-bg font-medium text-sm rounded-full hover:bg-accent-gold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] glow-orange w-full sm:w-auto"
             >
               {settings.heroPrimaryCtaText}

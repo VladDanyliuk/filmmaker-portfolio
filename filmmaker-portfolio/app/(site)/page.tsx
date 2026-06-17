@@ -32,7 +32,7 @@ export default async function HomePage() {
                 </h2>
               </div>
               <a
-                href="/work"
+                href="/services"
                 className="hidden md:inline-flex text-sm text-text-secondary hover:text-text-primary transition-colors duration-200 border-b border-glass pb-0.5"
               >
                 View All
@@ -49,7 +49,7 @@ export default async function HomePage() {
         primaryLabel="Start a Project"
         primaryHref="/contact"
         secondaryLabel="Services"
-        secondaryHref="/work"
+        secondaryHref="/services"
       />
     </>
   )

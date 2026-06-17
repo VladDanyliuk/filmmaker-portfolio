@@ -11,23 +11,25 @@ const MAX_REQUESTS = 3
 // production: the previous in-memory Map reset on every Vercel cold start and
 // was not shared across serverless instances, so it provided no real limit.
 //
-// Configure via env vars (see .env.local.example):
-//   UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN
+// Configure via env vars (see .env.local.example). These are provisioned
+// automatically by the Vercel Marketplace Upstash Redis integration:
+//   KV_REST_API_URL, KV_REST_API_TOKEN
 //
 // If those are absent (e.g. local dev), we fall back to a best-effort in-memory
 // limiter so the form still works locally — but that fallback is NOT durable
 // and must not be relied on in production.
-const hasUpstash =
-  !!process.env.UPSTASH_REDIS_REST_URL && !!process.env.UPSTASH_REDIS_REST_TOKEN
+const redisUrl = process.env.KV_REST_API_URL
+const redisToken = process.env.KV_REST_API_TOKEN
 
-const ratelimit = hasUpstash
-  ? new Ratelimit({
-      redis: Redis.fromEnv(),
-      limiter: Ratelimit.slidingWindow(MAX_REQUESTS, '15 m'),
-      prefix: 'contact-form',
-      analytics: false,
-    })
-  : null
+const ratelimit =
+  redisUrl && redisToken
+    ? new Ratelimit({
+        redis: new Redis({ url: redisUrl, token: redisToken }),
+        limiter: Ratelimit.slidingWindow(MAX_REQUESTS, '15 m'),
+        prefix: 'contact-form',
+        analytics: false,
+      })
+    : null
 
 const memoryMap = new Map<string, number[]>()
 
@@ -47,7 +49,7 @@ async function isRateLimited(ip: string): Promise<boolean> {
   }
   if (process.env.NODE_ENV === 'production') {
     console.warn(
-      '[contact] Upstash env vars missing — rate limiting is in-memory only and not durable.'
+      '[contact] KV_REST_API_URL/KV_REST_API_TOKEN missing — rate limiting is in-memory only and not durable.'
     )
   }
   return isRateLimitedInMemory(ip)

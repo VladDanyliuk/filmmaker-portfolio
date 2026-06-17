@@ -225,7 +225,7 @@ export function AboutContent({ page }: { page: Page | null }) {
   return (
     <>
       {/* ── 1. Hero ─────────────────────────────────────────────────────────── */}
-      <section className="relative h-[70vh] min-h-[500px] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[60vh] min-h-[440px] flex items-center justify-center overflow-hidden">
         {heroSrc ? (
           <Image
             src={heroSrc}
@@ -240,7 +240,6 @@ export function AboutContent({ page }: { page: Page | null }) {
           <div className="absolute inset-0 bg-bg-secondary" />
         )}
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/50 to-bg" />
-        <div className="absolute inset-0 bg-gradient-to-r from-bg/20 via-transparent to-transparent" />
 
         <motion.div
           variants={containerVariants}

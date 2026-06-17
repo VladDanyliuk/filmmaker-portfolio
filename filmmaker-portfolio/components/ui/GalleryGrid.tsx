@@ -13,7 +13,6 @@ interface GalleryGridProps {
 }
 
 const CATEGORIES = [
-  'All',
   'Commercial',
   'Documentary',
   'Music Video',
@@ -53,7 +52,7 @@ function getCardThumbnail(
 }
 
 export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) {
-  const [activeCategory, setActiveCategory] = useState('All')
+  const [activeCategory, setActiveCategory] = useState('Wedding')
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [vimeoThumbnails, setVimeoThumbnails] = useState<Record<string, string>>({})
 
@@ -83,12 +82,9 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
     })
   }, [projects])
 
-  const filtered =
-    activeCategory === 'All'
-      ? projects
-      : projects.filter(
-          (p) => formatCategory(p.category) === activeCategory
-        )
+  const filtered = projects.filter(
+    (p) => formatCategory(p.category) === activeCategory
+  )
 
   return (
     <div>

@@ -103,6 +103,14 @@ img, video {
 }
 
 /* ─── Utilities ─────────────────────────────────────────────────────────── */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 .border-glass {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }

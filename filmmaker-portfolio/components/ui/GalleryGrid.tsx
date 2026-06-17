@@ -88,42 +88,55 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
 
   return (
     <div>
-      {/* ── Filters ────────────────────────────────────────────────────────── */}
+      {/* ── Filters — minimal underlined tabs ──────────────────────────────── */}
       {showFilters && (
-        <div className="overflow-x-auto pb-1 mb-10 md:mb-14 -mx-6 px-6 md:mx-0 md:px-0">
-          <div className="flex gap-2 min-w-max md:min-w-0 md:flex-wrap">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-1.5 text-xs tracking-wide rounded-full border transition-all duration-200 whitespace-nowrap ${
-                  activeCategory === cat
-                    ? 'bg-accent-orange border-accent-orange text-bg font-medium'
-                    : 'border-white/[0.12] text-text-secondary hover:border-white/30 hover:text-text-primary'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
+        <div className="overflow-x-auto no-scrollbar pb-px mb-12 md:mb-16 -mx-6 px-6 md:mx-0 md:px-0">
+          <div className="flex justify-start md:justify-center gap-6 md:gap-9 min-w-max">
+            {CATEGORIES.map((cat) => {
+              const active = activeCategory === cat
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`relative pb-2 text-sm tracking-wide whitespace-nowrap transition-colors duration-200 ${
+                    active
+                      ? 'text-text-primary'
+                      : 'text-text-secondary/60 hover:text-text-primary'
+                  }`}
+                >
+                  {cat}
+                  {active && (
+                    <motion.span
+                      layoutId="filter-underline"
+                      className="absolute left-0 right-0 -bottom-px h-px bg-accent-orange"
+                      transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+                    />
+                  )}
+                </button>
+              )
+            })}
           </div>
         </div>
       )}
 
-      {/* ── Grid ───────────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {/* ── Editorial grid — featured + secondary ──────────────────────────── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-14">
         <AnimatePresence mode="popLayout">
-          {filtered.map((project) => {
+          {filtered.map((project, i) => {
             const imgSrc = getCardThumbnail(project, vimeoThumbnails)
             const hasVideo = !!(project.youtubeUrl || project.vimeoUrl)
+            const isFeatured = i === 0
 
             return (
               <motion.div
                 key={project._id}
                 layout
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-60px 0px' }}
+                exit={{ opacity: 0, transition: { duration: 0.2 } }}
+                transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+                className={isFeatured ? 'md:col-span-2' : ''}
               >
                 <article className="group rounded-xl overflow-hidden bg-bg-secondary border border-white/[0.08] transition-all duration-300 hover:border-white/[0.16] hover:shadow-[0_8px_32px_rgba(0,0,0,0.45)]">
 
@@ -138,7 +151,7 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                         alt={project.title}
                         fill
                         className="object-contain transition-transform duration-500 group-hover:scale-[1.03]"
-                        sizes="(max-width: 768px) 100vw, 50vw"
+                        sizes={isFeatured ? '100vw' : '(max-width: 768px) 100vw, 50vw'}
                         loading="lazy"
                       />
                     ) : (
@@ -149,19 +162,12 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                       </div>
                     )}
 
-                    {/* Hover overlay — title only */}
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/45 transition-colors duration-300" />
-                    {hasVideo && (
-                      <div className="absolute inset-0 flex items-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                        <p className="font-display text-sm font-medium text-white/90 leading-snug line-clamp-2">
-                          {project.title}
-                        </p>
-                      </div>
-                    )}
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-black/0 md:group-hover:bg-black/45 transition-colors duration-300" />
 
-                    {/* Play button */}
+                    {/* Play button — always visible on touch, hover-reveal on desktop */}
                     {hasVideo && (
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="absolute inset-0 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
                         <div className="w-14 h-14 rounded-full border border-white/40 bg-black/50 backdrop-blur-sm flex items-center justify-center">
                           <svg className="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -172,8 +178,12 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                   </div>
 
                   {/* ── Metadata ───────────────────────────────────────────── */}
-                  <div className="px-5 py-4 space-y-3">
-                    <h3 className="font-display text-lg font-medium text-text-primary leading-snug">
+                  <div className="px-5 md:px-6 py-5 space-y-3">
+                    <h3
+                      className={`font-display font-medium text-text-primary leading-snug ${
+                        isFeatured ? 'text-xl md:text-2xl' : 'text-lg'
+                      }`}
+                    >
                       {project.title}
                     </h3>
 
@@ -204,7 +214,11 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                     </div>
 
                     {project.description && (
-                      <p className="text-sm text-text-secondary/65 line-clamp-2 leading-relaxed">
+                      <p
+                        className={`text-sm text-text-secondary/65 leading-relaxed ${
+                          isFeatured ? 'line-clamp-3 max-w-2xl' : 'line-clamp-2'
+                        }`}
+                      >
                         {project.description}
                       </p>
                     )}
@@ -224,7 +238,7 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedProject(null)}
-            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 md:p-10"
+            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-start md:items-center justify-center overflow-y-auto p-4 md:p-10"
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
@@ -232,7 +246,7 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.25 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-4xl"
+              className="w-full max-w-4xl my-auto"
             >
               <div className="flex justify-between items-center mb-4">
                 <div>

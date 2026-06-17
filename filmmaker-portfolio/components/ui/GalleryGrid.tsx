@@ -22,6 +22,14 @@ const CATEGORIES = [
   'Wedding',
 ]
 
+function formatCategory(slug: string): string {
+  return slug
+    .replace(/\d{4}$/, '')
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+    .trim()
+}
+
 function extractYouTubeId(url: string): string | null {
   const match = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/)
   return match?.[1] ?? null
@@ -79,9 +87,7 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
     activeCategory === 'All'
       ? projects
       : projects.filter(
-          (p) =>
-            p.category.toLowerCase().replace(/-/g, ' ') ===
-            activeCategory.toLowerCase()
+          (p) => formatCategory(p.category) === activeCategory
         )
 
   return (
@@ -188,7 +194,7 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
 
                     <div className="flex items-center gap-3 mt-3">
                       <span className="text-xs uppercase tracking-wider text-accent-orange">
-                        {project.category}
+                        {formatCategory(project.category)}
                       </span>
                       {project.year && (
                         <span className="text-xs text-text-secondary/45">{project.year}</span>
@@ -229,7 +235,7 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
               <div className="flex justify-between items-center mb-4">
                 <div>
                   <p className="text-xs uppercase tracking-widest text-accent-orange mb-1">
-                    {selectedProject.category}
+                    {formatCategory(selectedProject.category)}
                   </p>
                   <h3 className="font-display text-xl font-medium text-text-primary">
                     {selectedProject.title}

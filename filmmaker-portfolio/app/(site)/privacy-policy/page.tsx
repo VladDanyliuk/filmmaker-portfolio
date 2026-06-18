@@ -102,31 +102,21 @@ export default function PrivacyPolicyPage() {
             <RevealOnScroll>
               <div className="space-y-4">
                 <h2 className="font-display text-xl md:text-2xl font-medium tracking-tight text-text-primary">
-                  4. Cookies
+                  4. Cookies & Local Storage
                 </h2>
                 <p>
-                  This website uses cookies to improve your browsing experience. A cookie is a small
-                  text file stored on your device by your browser.
+                  This website does not use any analytics, advertising, or tracking cookies, and does
+                  not collect any data about your browsing automatically.
                 </p>
-                <p>We use the following types of cookies:</p>
-                <ul className="list-disc list-inside space-y-2 pl-2">
-                  <li>
-                    <span className="text-text-primary">Essential cookies</span> — necessary for the
-                    website to function correctly. These cannot be disabled.
-                  </li>
-                  <li>
-                    <span className="text-text-primary">Analytics cookies</span> — used to understand
-                    how visitors interact with the website (e.g. pages visited, time spent). These are
-                    only set if you have given your consent.
-                  </li>
-                </ul>
                 <p>
-                  Your cookie preference is stored locally in your browser under the key{' '}
+                  The only thing stored on your device is a single preference saved in your browser's
+                  local storage under the key{' '}
                   <code className="text-accent-orange bg-bg-secondary px-1.5 py-0.5 rounded-sm text-xs">
                     cookie-consent
-                  </code>
-                  . No consent data is sent to any server. You can change your preference at any time
-                  by clearing your browser's local storage.
+                  </code>{' '}
+                  when you accept or decline the cookie notice. This simply records your choice so the
+                  notice isn't shown again. It is never transmitted to any server. You can clear it at
+                  any time via your browser's local storage settings.
                 </p>
               </div>
             </RevealOnScroll>

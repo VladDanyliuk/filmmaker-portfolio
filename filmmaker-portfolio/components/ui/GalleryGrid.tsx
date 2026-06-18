@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { urlFor } from '@/sanity/lib/image'
@@ -106,6 +106,57 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [vimeoThumbnails, setVimeoThumbnails] = useState<Record<string, string>>({})
 
+  // Lightbox accessibility: capture the element that opened the lightbox so
+  // focus can be restored on close.
+  const lightboxRef = useRef<HTMLDivElement>(null)
+  const closeBtnRef = useRef<HTMLButtonElement>(null)
+  const triggerRef = useRef<HTMLElement | null>(null)
+
+  const openLightbox = (e: React.SyntheticEvent, project: Project) => {
+    triggerRef.current = e.currentTarget as HTMLElement
+    setSelectedProject(project)
+  }
+
+  // Escape to close + focus trap. Focus moves to the close button on open and
+  // returns to the triggering element on close.
+  useEffect(() => {
+    if (!selectedProject) return
+
+    closeBtnRef.current?.focus()
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedProject(null)
+        return
+      }
+      if (e.key !== 'Tab') return
+
+      const node = lightboxRef.current
+      if (!node) return
+      const focusables = node.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusables.length === 0) return
+
+      const first = focusables[0]
+      const last = focusables[focusables.length - 1]
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      triggerRef.current?.focus()
+    }
+  }, [selectedProject])
+
   useEffect(() => {
     const needsVimeo = projects.filter(
       (p) => !p.coverImage && !p.youtubeUrl && p.vimeoUrl
@@ -199,8 +250,21 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
 
                   {/* ── Thumbnail ──────────────────────────────────────────── */}
                   <div
-                    className={`relative aspect-video overflow-hidden bg-bg ${hasVideo ? 'cursor-pointer' : ''}`}
-                    onClick={() => hasVideo && setSelectedProject(project)}
+                    className={`relative aspect-video overflow-hidden bg-bg ${hasVideo ? 'cursor-pointer' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-orange`}
+                    onClick={(e) => hasVideo && openLightbox(e, project)}
+                    role={hasVideo ? 'button' : undefined}
+                    tabIndex={hasVideo ? 0 : undefined}
+                    aria-label={hasVideo ? `Play ${project.title}` : undefined}
+                    onKeyDown={
+                      hasVideo
+                        ? (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault()
+                              openLightbox(e, project)
+                            }
+                          }
+                        : undefined
+                    }
                   >
                     <Thumbnail
                       candidates={candidates}
@@ -287,6 +351,11 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
             className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-start md:items-center justify-center overflow-y-auto p-4 md:p-10"
           >
             <motion.div
+              ref={lightboxRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label={selectedProject.title}
+              tabIndex={-1}
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
@@ -304,6 +373,7 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                   </h3>
                 </div>
                 <button
+                  ref={closeBtnRef}
                   onClick={() => setSelectedProject(null)}
                   className="w-9 h-9 flex items-center justify-center rounded-full border border-white/[0.12] text-text-secondary hover:text-text-primary hover:border-white/25 transition-colors duration-200"
                   aria-label="Close"

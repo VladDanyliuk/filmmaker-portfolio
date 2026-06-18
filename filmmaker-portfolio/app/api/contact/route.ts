@@ -94,6 +94,27 @@ function isValidEmail(email: string): boolean {
   return true
 }
 
+// ── CSRF / Origin check ────────────────────────────────────────────────────
+// Reject cross-site POSTs by requiring the Origin (or Referer) host to match
+// the request's own Host. This is an extra layer on top of the honeypot; it
+// works across preview deployments and custom domains without hardcoding,
+// since same-origin requests always share the Host. Browsers send Origin on
+// same-origin POSTs, so a missing Origin/Referer is treated as suspicious in
+// production but allowed in development (e.g. curl, local tooling).
+function isSameOrigin(request: Request): boolean {
+  const host = request.headers.get('host')
+  if (!host) return false
+  const source = request.headers.get('origin') ?? request.headers.get('referer')
+  if (!source) {
+    return process.env.NODE_ENV !== 'production'
+  }
+  try {
+    return new URL(source).host === host
+  } catch {
+    return false
+  }
+}
+
 function userConfirmationHtml(name: string): string {
   return `<!DOCTYPE html>
 <html>
@@ -217,6 +238,10 @@ function adminNotificationHtml(data: {
 
 export async function POST(request: Request) {
   try {
+    if (!isSameOrigin(request)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
     if (await isRateLimited(ip)) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 })

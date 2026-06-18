@@ -15,13 +15,8 @@ export function CookieBanner() {
     }
   }, [])
 
-  const handleAccept = () => {
-    localStorage.setItem(CONSENT_KEY, 'accepted')
-    setVisible(false)
-  }
-
-  const handleDecline = () => {
-    localStorage.setItem(CONSENT_KEY, 'declined')
+  const handleDismiss = () => {
+    localStorage.setItem(CONSENT_KEY, 'dismissed')
     setVisible(false)
   }
 
@@ -37,7 +32,8 @@ export function CookieBanner() {
         >
           <div className="max-w-3xl mx-auto bg-bg-secondary border border-glass rounded-sm px-5 py-4 md:px-6 md:py-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 shadow-2xl">
             <p className="text-sm text-text-secondary leading-relaxed flex-1">
-              This website uses cookies to ensure you get the best experience.{' '}
+              This site uses no tracking or analytics cookies — only a small note in your browser so
+              this message stays dismissed.{' '}
               <Link
                 href="/privacy-policy"
                 className="text-text-primary underline underline-offset-2 hover:text-accent-orange transition-colors duration-200"
@@ -47,16 +43,10 @@ export function CookieBanner() {
             </p>
             <div className="flex items-center gap-3 shrink-0">
               <button
-                onClick={handleDecline}
-                className="px-4 py-2 text-xs uppercase tracking-widest text-text-secondary border border-glass rounded-full hover:border-white/20 hover:text-text-primary transition-all duration-200"
-              >
-                Decline
-              </button>
-              <button
-                onClick={handleAccept}
+                onClick={handleDismiss}
                 className="px-4 py-2 text-xs uppercase tracking-widest bg-accent-orange text-bg font-medium rounded-full hover:bg-accent-gold transition-all duration-200"
               >
-                Accept
+                Got it
               </button>
             </div>
           </div>

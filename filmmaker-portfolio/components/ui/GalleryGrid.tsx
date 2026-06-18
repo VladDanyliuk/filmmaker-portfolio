@@ -44,7 +44,11 @@ function getThumbnailCandidates(
   vimeoThumbnails: Record<string, string>
 ): string[] {
   if (project.coverImage) {
-    return [urlFor(project.coverImage).width(900).url()]
+    // Force the card's 16:9 frame with fit('crop') so the Sanity hotspot/crop
+    // is honoured (width-only URLs ignore the focal point — they just scale the
+    // full image, which the aspect-video container then slices). Same approach
+    // as the /about portrait and /services hero.
+    return [urlFor(project.coverImage).width(1280).height(720).fit('crop').url()]
   }
   if (project.youtubeUrl) {
     const id = extractYouTubeId(project.youtubeUrl)

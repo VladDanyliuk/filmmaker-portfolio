@@ -32,8 +32,8 @@ export function CookieBanner() {
         >
           <div className="max-w-3xl mx-auto bg-bg-secondary border border-glass rounded-sm px-5 py-4 md:px-6 md:py-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 shadow-2xl">
             <p className="text-sm text-text-secondary leading-relaxed flex-1">
-              This site uses no tracking or analytics cookies — only a small note in your browser so
-              this message stays dismissed.{' '}
+              This site uses no advertising or tracking cookies — only a small note in your browser so
+              this message stays dismissed, plus privacy-friendly, cookieless analytics.{' '}
               <Link
                 href="/privacy-policy"
                 className="text-text-primary underline underline-offset-2 hover:text-accent-orange transition-colors duration-200"

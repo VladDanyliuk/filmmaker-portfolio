@@ -66,8 +66,9 @@ export default function PrivacyPolicyPage() {
                   <li>Your message</li>
                 </ul>
                 <p>
-                  We do not collect any data automatically beyond what is described in the Cookies
-                  section below.
+                  Beyond the contact form, we collect only anonymous, aggregate usage statistics, as
+                  described in the Cookies, Local Storage &amp; Analytics section below. We do not
+                  collect any personally identifiable information about you automatically.
                 </p>
               </div>
             </RevealOnScroll>
@@ -102,11 +103,11 @@ export default function PrivacyPolicyPage() {
             <RevealOnScroll>
               <div className="space-y-4">
                 <h2 className="font-display text-xl md:text-2xl font-medium tracking-tight text-text-primary">
-                  4. Cookies & Local Storage
+                  4. Cookies, Local Storage & Analytics
                 </h2>
                 <p>
-                  This website does not use any analytics, advertising, or tracking cookies, and does
-                  not collect any data about your browsing automatically.
+                  This website does not use any advertising or tracking cookies, and does not track
+                  you across other sites.
                 </p>
                 <p>
                   The only thing stored on your device is a single preference saved in your browser's
@@ -114,9 +115,24 @@ export default function PrivacyPolicyPage() {
                   <code className="text-accent-orange bg-bg-secondary px-1.5 py-0.5 rounded-sm text-xs">
                     cookie-consent
                   </code>{' '}
-                  when you accept or decline the cookie notice. This simply records your choice so the
-                  notice isn't shown again. It is never transmitted to any server. You can clear it at
-                  any time via your browser's local storage settings.
+                  when you dismiss the cookie notice. This simply records your choice so the notice
+                  isn't shown again. It is never transmitted to any server. You can clear it at any
+                  time via your browser's local storage settings.
+                </p>
+                <p>
+                  To understand how the site is performing, we use{' '}
+                  <a
+                    href="https://vercel.com/docs/analytics/privacy-policy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-text-primary underline underline-offset-2 hover:text-accent-orange transition-colors duration-200"
+                  >
+                    Vercel Web Analytics
+                  </a>
+                  , a privacy-friendly, cookieless analytics tool. It collects only anonymous,
+                  aggregate statistics — such as page views, referrers, and general location and
+                  device type — and does not use cookies, does not track individual visitors, and does
+                  not store any personally identifiable information about you.
                 </p>
               </div>
             </RevealOnScroll>

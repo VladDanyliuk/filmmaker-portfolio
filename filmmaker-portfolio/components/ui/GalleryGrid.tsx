@@ -69,11 +69,9 @@ function getThumbnailCandidates(
 function Thumbnail({
   candidates,
   title,
-  isFeatured,
 }: {
   candidates: string[]
   title: string
-  isFeatured: boolean
 }) {
   const [index, setIndex] = useState(0)
 
@@ -98,7 +96,7 @@ function Thumbnail({
       alt={title}
       fill
       className="object-contain transition-transform duration-500 group-hover:scale-[1.03]"
-      sizes={isFeatured ? '100vw' : '(max-width: 768px) 100vw, 50vw'}
+      sizes="(max-width: 768px) 100vw, 50vw"
       loading="lazy"
       onError={() => setIndex((i) => i + 1)}
     />
@@ -231,13 +229,12 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
         </p>
       )}
 
-      {/* ── Editorial grid — featured + secondary ──────────────────────────── */}
+      {/* ── Uniform grid — equal-size cards, 2 per row ─────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-14">
         <AnimatePresence mode="popLayout">
-          {filtered.map((project, i) => {
+          {filtered.map((project) => {
             const candidates = getThumbnailCandidates(project, vimeoThumbnails)
             const hasVideo = !!(project.youtubeUrl || project.vimeoUrl)
-            const isFeatured = i === 0
 
             return (
               <motion.div
@@ -248,7 +245,6 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                 viewport={{ once: true, margin: '-60px 0px' }}
                 exit={{ opacity: 0, transition: { duration: 0.2 } }}
                 transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-                className={isFeatured ? 'md:col-span-2' : ''}
               >
                 <article className="group rounded-xl overflow-hidden bg-bg-secondary border border-white/[0.08] transition-all duration-300 hover:border-white/[0.16] hover:shadow-[0_8px_32px_rgba(0,0,0,0.45)]">
 
@@ -273,7 +269,6 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                     <Thumbnail
                       candidates={candidates}
                       title={project.title}
-                      isFeatured={isFeatured}
                     />
 
                     {/* Overlay */}
@@ -293,11 +288,7 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
 
                   {/* ── Metadata ───────────────────────────────────────────── */}
                   <div className="px-5 md:px-6 py-5 space-y-3">
-                    <h3
-                      className={`font-display font-medium text-text-primary leading-snug ${
-                        isFeatured ? 'text-xl md:text-2xl' : 'text-lg'
-                      }`}
-                    >
+                    <h3 className="font-display font-medium text-text-primary leading-snug text-lg">
                       {project.title}
                     </h3>
 
@@ -328,11 +319,7 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                     </div>
 
                     {project.description && (
-                      <p
-                        className={`text-sm text-text-secondary/65 leading-relaxed ${
-                          isFeatured ? 'line-clamp-3 max-w-2xl' : 'line-clamp-2'
-                        }`}
-                      >
+                      <p className="text-sm text-text-secondary/65 leading-relaxed line-clamp-2">
                         {project.description}
                       </p>
                     )}

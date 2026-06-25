@@ -35,28 +35,36 @@ const SKILLS = [
 
 const TIMELINE = [
   {
-    year: '2017',
-    text: 'Started as a video editor at age 15, building a foundation in storytelling and post-production',
+    year: '2019',
+    text: 'Started as a video editor at 15, building a foundation in storytelling and post-production',
   },
   {
-    year: '2019',
+    year: '2020',
     text: 'First professional wedding and commercial projects in Ukraine',
   },
   {
     year: '2021',
-    text: 'Expanded career to Italy, working on international projects',
+    text: 'Expanded to Italy, working on international productions',
+  },
+  {
+    year: '2022',
+    text: 'Relocated to London — freelancing for brands, businesses, and private clients across the UK',
   },
   {
     year: '2023',
-    text: 'Established in London, UK — freelancing for brands, businesses and private clients',
+    text: 'Began BA (Hons) in Film & TV Production at the University of Greenwich',
   },
   {
     year: '2024',
-    text: 'BA (Hons) in Film & TV Production, University of Greenwich',
+    text: 'Joined Mash Productions as a videographer, capturing high-profile event content across London',
   },
   {
     year: '2025',
-    text: 'Founded AD. — full-service video production and dedicated wedding filmmaking team in London',
+    text: 'Grew a dedicated team specialising in Ukrainian wedding films in London',
+  },
+  {
+    year: '2026',
+    text: 'Founded AD. — a freelance videography studio operating across London and Europe',
   },
 ]
 

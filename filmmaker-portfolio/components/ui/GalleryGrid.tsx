@@ -14,14 +14,23 @@ interface GalleryGridProps {
 
 const CATEGORIES = [
   'Wedding',
-  'Commercial',
+  'Events',
   'Documentary',
   'Music Video',
   'Short Film',
   'Brand Film',
 ]
 
+// Display-label overrides for Sanity category values whose stored value differs
+// from the label we want to show. The underlying Sanity value stays 'commercial'
+// (no data migration needed); we only relabel it to 'Events' in the UI.
+const CATEGORY_LABELS: Record<string, string> = {
+  commercial: 'Events',
+}
+
 function formatCategory(slug: string): string {
+  const override = CATEGORY_LABELS[slug.toLowerCase()]
+  if (override) return override
   return slug
     .replace(/\d{4}$/, '')
     .replace(/-/g, ' ')

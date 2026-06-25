@@ -24,7 +24,7 @@ export const project = defineType({
       type: 'string',
       options: {
         list: [
-          { title: 'Commercial', value: 'commercial' },
+          { title: 'Events', value: 'commercial' },
           { title: 'Documentary', value: 'documentary' },
           { title: 'Music Video', value: 'music-video' },
           { title: 'Short Film', value: 'short-film' },

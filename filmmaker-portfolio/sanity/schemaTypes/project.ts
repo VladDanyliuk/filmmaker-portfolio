@@ -25,7 +25,7 @@ export const project = defineType({
       options: {
         list: [
           { title: 'Events', value: 'commercial' },
-          { title: 'Documentary', value: 'documentary' },
+          { title: 'Business Videos', value: 'documentary' },
           { title: 'Music Video', value: 'music-video' },
           { title: 'Short Film', value: 'short-film' },
           { title: 'Brand Film', value: 'brand-film' },

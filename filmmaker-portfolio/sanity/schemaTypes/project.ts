@@ -67,13 +67,13 @@ export const project = defineType({
       description: 'Full Vimeo video URL, e.g. https://vimeo.com/XXXXXXX',
     }),
     defineField({
-      name: 'instagramUrl',
-      title: 'Instagram Reel URL',
-      type: 'url',
+      name: 'mp4File',
+      title: 'Uploaded Video (MP4)',
+      type: 'file',
+      options: { accept: 'video/mp4' },
       description:
-        'Full Instagram Reel/post URL, e.g. https://www.instagram.com/reel/XXXXX. ' +
-        'Instagram cannot be embedded inline, so the card links out to Instagram — ' +
-        'upload a Cover Image above for the thumbnail. Used only when no YouTube/Vimeo URL is set.',
+        'Directly-uploaded vertical video (e.g. an Instagram Reel) that plays natively on the site. ' +
+        'Upload a Cover Image above for the thumbnail. Takes priority over YouTube/Vimeo URLs in the lightbox.',
     }),
     defineField({
       name: 'description',

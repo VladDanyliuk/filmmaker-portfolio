@@ -245,11 +245,13 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
         <AnimatePresence mode="popLayout">
           {filtered.map((project) => {
             const candidates = getThumbnailCandidates(project, vimeoThumbnails)
-            const hasVideo = !!(project.youtubeUrl || project.vimeoUrl)
-            // Instagram can't be embedded inline, so an Instagram-only project
-            // links out to Instagram instead of opening the lightbox. Video
-            // projects keep their existing lightbox behaviour.
-            const isInstagram = !hasVideo && !!project.instagramUrl
+            // A project is playable in the lightbox if it has an uploaded MP4,
+            // a YouTube URL, or a Vimeo URL. MP4 takes priority at render time.
+            const hasPlayable = !!(
+              project.mp4File?.asset?.url ||
+              project.youtubeUrl ||
+              project.vimeoUrl
+            )
 
             return (
               <motion.div
@@ -264,82 +266,42 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                 <article className="group rounded-xl overflow-hidden bg-bg-secondary border border-white/[0.08] transition-all duration-300 hover:border-white/[0.16] hover:shadow-[0_8px_32px_rgba(0,0,0,0.45)]">
 
                   {/* ── Thumbnail ──────────────────────────────────────────── */}
-                  {(() => {
-                    const mediaInner = (
-                      <>
-                        <Thumbnail
-                          candidates={candidates}
-                          title={project.title}
-                        />
-
-                        {/* Overlay */}
-                        <div className="absolute inset-0 bg-black/0 md:group-hover:bg-black/45 transition-colors duration-300" />
-
-                        {/* Play button — always visible on touch, hover-reveal on desktop */}
-                        {hasVideo && (
-                          <div className="absolute inset-0 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
-                            <div className="w-14 h-14 rounded-full border border-white/40 bg-black/50 backdrop-blur-sm flex items-center justify-center">
-                              <svg className="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M8 5v14l11-7z" />
-                              </svg>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Instagram link-out affordance — matches play-button weight */}
-                        {isInstagram && (
-                          <div className="absolute inset-0 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
-                            <div className="w-14 h-14 rounded-full border border-white/40 bg-black/50 backdrop-blur-sm flex items-center justify-center">
-                              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-                                <rect x="2" y="2" width="20" height="20" rx="5" />
-                                <circle cx="12" cy="12" r="4" />
-                                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-                              </svg>
-                            </div>
-                          </div>
-                        )}
-                      </>
-                    )
-
-                    const mediaClass =
-                      'relative block aspect-video overflow-hidden bg-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-orange'
-
-                    if (isInstagram) {
-                      return (
-                        <a
-                          href={project.instagramUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label={`View ${project.title} on Instagram`}
-                          className={`${mediaClass} cursor-pointer`}
-                        >
-                          {mediaInner}
-                        </a>
-                      )
+                  <div
+                    className={`relative aspect-video overflow-hidden bg-bg ${hasPlayable ? 'cursor-pointer' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-orange`}
+                    onClick={(e) => hasPlayable && openLightbox(e, project)}
+                    role={hasPlayable ? 'button' : undefined}
+                    tabIndex={hasPlayable ? 0 : undefined}
+                    aria-label={hasPlayable ? `Play ${project.title}` : undefined}
+                    onKeyDown={
+                      hasPlayable
+                        ? (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault()
+                              openLightbox(e, project)
+                            }
+                          }
+                        : undefined
                     }
+                  >
+                    <Thumbnail
+                      candidates={candidates}
+                      title={project.title}
+                    />
 
-                    return (
-                      <div
-                        className={`${mediaClass} ${hasVideo ? 'cursor-pointer' : ''}`}
-                        onClick={(e) => hasVideo && openLightbox(e, project)}
-                        role={hasVideo ? 'button' : undefined}
-                        tabIndex={hasVideo ? 0 : undefined}
-                        aria-label={hasVideo ? `Play ${project.title}` : undefined}
-                        onKeyDown={
-                          hasVideo
-                            ? (e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                  e.preventDefault()
-                                  openLightbox(e, project)
-                                }
-                              }
-                            : undefined
-                        }
-                      >
-                        {mediaInner}
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-black/0 md:group-hover:bg-black/45 transition-colors duration-300" />
+
+                    {/* Play button — always visible on touch, hover-reveal on desktop */}
+                    {hasPlayable && (
+                      <div className="absolute inset-0 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="w-14 h-14 rounded-full border border-white/40 bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                          <svg className="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
                       </div>
-                    )
-                  })()}
+                    )}
+                  </div>
 
                   {/* ── Metadata ───────────────────────────────────────────── */}
                   <div className="px-5 md:px-6 py-5 space-y-3">
@@ -388,7 +350,10 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
 
       {/* ── Lightbox ───────────────────────────────────────────────────────── */}
       <AnimatePresence>
-        {selectedProject && (selectedProject.youtubeUrl || selectedProject.vimeoUrl) && (
+        {selectedProject &&
+          (selectedProject.mp4File?.asset?.url ||
+            selectedProject.youtubeUrl ||
+            selectedProject.vimeoUrl) && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -407,7 +372,9 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.25 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-4xl my-auto"
+              className={`w-full my-auto ${
+                selectedProject.mp4File?.asset?.url ? 'max-w-sm' : 'max-w-4xl'
+              }`}
             >
               <div className="flex justify-between items-center mb-4">
                 <div>
@@ -427,10 +394,27 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                   ✕
                 </button>
               </div>
-              <VideoEmbed
-                url={(selectedProject.youtubeUrl || selectedProject.vimeoUrl)!}
-                title={selectedProject.title}
-              />
+              {selectedProject.mp4File?.asset?.url ? (
+                // Uploaded MP4 (vertical Reel) takes priority — play natively.
+                // Muted autoplay + loop satisfies browser autoplay policies;
+                // controls let the viewer unmute, scrub, and fullscreen.
+                <div className="relative w-full aspect-[9/16] max-h-[80vh] mx-auto rounded-sm overflow-hidden bg-black">
+                  <video
+                    src={selectedProject.mp4File.asset.url}
+                    controls
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="absolute inset-0 w-full h-full object-contain"
+                  />
+                </div>
+              ) : (
+                <VideoEmbed
+                  url={(selectedProject.youtubeUrl || selectedProject.vimeoUrl)!}
+                  title={selectedProject.title}
+                />
+              )}
               {selectedProject.description && (
                 <p className="text-sm text-text-secondary/80 mt-4 leading-relaxed whitespace-pre-line">
                   {selectedProject.description}

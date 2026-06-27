@@ -60,7 +60,11 @@ export interface Project {
   coverImage?: SanityImage
   youtubeUrl?: string
   vimeoUrl?: string
-  instagramUrl?: string
+  mp4File?: {
+    asset?: {
+      url?: string
+    }
+  }
   role?: string
   description?: string
   year?: number

@@ -38,9 +38,13 @@ export const siteSettings = defineType({
       type: 'string',
     }),
     defineField({
-      name: 'heroVideoUrl',
-      title: 'Hero Background Video URL (relative path, e.g. /video/hero.mp4)',
-      type: 'string',
+      name: 'heroVideo',
+      title: 'Hero Background Video',
+      type: 'file',
+      options: { accept: 'video/mp4,video/quicktime' },
+      description:
+        'Desktop hero background video (.mp4 or .mov), uploaded directly here — no developer needed. ' +
+        'On mobile, the Hero Mobile Fallback Image below is shown instead.',
     }),
     defineField({
       name: 'heroFallbackImage',

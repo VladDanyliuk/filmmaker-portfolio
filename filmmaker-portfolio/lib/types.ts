@@ -7,7 +7,12 @@ export interface SiteSettings {
   heroPrimaryCtaUrl: string
   heroSecondaryCtaText: string
   heroSecondaryCtaUrl: string
-  heroVideoUrl: string
+  heroVideo?: {
+    asset?: {
+      url?: string
+      mimeType?: string
+    }
+  }
   heroFallbackImage: SanityImage
   siteDescription: string
   contactEmail: string

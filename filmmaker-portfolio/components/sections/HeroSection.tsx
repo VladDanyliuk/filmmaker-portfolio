@@ -42,6 +42,9 @@ export function HeroSection({ settings }: HeroSectionProps) {
     }
   }, [isMobile])
 
+  const heroVideoUrl = settings?.heroVideo?.asset?.url
+  const heroVideoMime = settings?.heroVideo?.asset?.mimeType
+
   const fallbackImage = settings?.heroFallbackImage
   const fallbackSrc = fallbackImage
     ? urlFor(fallbackImage).width(1920).fit('crop').url()
@@ -75,10 +78,9 @@ export function HeroSection({ settings }: HeroSectionProps) {
           isMobile === null ? 'opacity-0' : 'opacity-100'
         }`}
       >
-        {isMobile === false && settings?.heroVideoUrl ? (
+        {isMobile === false && heroVideoUrl ? (
           <video
             ref={videoRef}
-            src={settings.heroVideoUrl}
             autoPlay
             muted
             loop
@@ -87,7 +89,9 @@ export function HeroSection({ settings }: HeroSectionProps) {
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
               videoLoaded ? 'opacity-100' : 'opacity-0'
             }`}
-          />
+          >
+            <source src={heroVideoUrl} type={heroVideoMime || undefined} />
+          </video>
         ) : fallbackSrc ? (
           <Image
             src={fallbackSrc}

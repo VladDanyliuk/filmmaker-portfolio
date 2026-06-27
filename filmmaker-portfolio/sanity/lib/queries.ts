@@ -8,7 +8,7 @@ export const siteSettingsQuery = groq`
     heroPrimaryCtaUrl,
     heroSecondaryCtaText,
     heroSecondaryCtaUrl,
-    heroVideoUrl,
+    heroVideo{ asset->{ url, mimeType } },
     heroFallbackImage,
     siteDescription,
     contactEmail,

@@ -405,6 +405,13 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                     muted
                     loop
                     playsInline
+                    // Never let the browser pop this out into Picture-in-Picture.
+                    // The video autoplays while the framer-motion modal is still
+                    // animating in (opacity/scale < 1); Chrome's auto-PiP heuristic
+                    // treats the briefly-occluded playing video as a PiP candidate
+                    // and floats it out, leaving the modal black. This also removes
+                    // the PiP button from the native controls.
+                    disablePictureInPicture
                     className="absolute inset-0 w-full h-full object-contain"
                   >
                     {/* Use the asset's real MIME type (video/mp4 or video/quicktime

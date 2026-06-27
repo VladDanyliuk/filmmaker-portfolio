@@ -67,6 +67,15 @@ export const project = defineType({
       description: 'Full Vimeo video URL, e.g. https://vimeo.com/XXXXXXX',
     }),
     defineField({
+      name: 'instagramUrl',
+      title: 'Instagram Reel URL',
+      type: 'url',
+      description:
+        'Full Instagram Reel/post URL, e.g. https://www.instagram.com/reel/XXXXX. ' +
+        'Instagram cannot be embedded inline, so the card links out to Instagram — ' +
+        'upload a Cover Image above for the thumbnail. Used only when no YouTube/Vimeo URL is set.',
+    }),
+    defineField({
       name: 'description',
       title: 'Project Description',
       type: 'text',

@@ -4,7 +4,8 @@ interface VideoEmbedProps {
 }
 
 function getYouTubeId(url: string): string | null {
-  const match = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/)
+  // Handles watch?v=ID, youtu.be/ID, and Shorts (youtube.com/shorts/ID).
+  const match = url.match(/(?:v=|youtu\.be\/|shorts\/)([^&?/]+)/)
   return match?.[1] ?? null
 }
 

@@ -47,6 +47,7 @@ export const allProjectsQuery = groq`
     coverImage,
     youtubeUrl,
     vimeoUrl,
+    instagramUrl,
     description,
     year,
     client,
@@ -63,7 +64,8 @@ export const featuredProjectsQuery = groq`
     role,
     coverImage,
     youtubeUrl,
-    vimeoUrl
+    vimeoUrl,
+    instagramUrl
   }
 `
 
@@ -77,6 +79,7 @@ export const projectBySlugQuery = groq`
     coverImage,
     youtubeUrl,
     vimeoUrl,
+    instagramUrl,
     description,
     year,
     client

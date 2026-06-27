@@ -400,14 +400,21 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
                 // controls let the viewer unmute, scrub, and fullscreen.
                 <div className="relative w-full aspect-[9/16] max-h-[80vh] mx-auto rounded-sm overflow-hidden bg-black">
                   <video
-                    src={selectedProject.mp4File.asset.url}
                     controls
                     autoPlay
                     muted
                     loop
                     playsInline
                     className="absolute inset-0 w-full h-full object-contain"
-                  />
+                  >
+                    {/* Use the asset's real MIME type (video/mp4 or video/quicktime
+                        for .mov) so the browser gets an accurate hint rather than
+                        assuming mp4. */}
+                    <source
+                      src={selectedProject.mp4File.asset.url}
+                      type={selectedProject.mp4File.asset.mimeType || undefined}
+                    />
+                  </video>
                 </div>
               ) : (
                 <VideoEmbed

@@ -63,6 +63,7 @@ export interface Project {
   mp4File?: {
     asset?: {
       url?: string
+      mimeType?: string
     }
   }
   role?: string

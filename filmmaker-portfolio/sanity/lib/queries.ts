@@ -47,7 +47,7 @@ export const allProjectsQuery = groq`
     coverImage,
     youtubeUrl,
     vimeoUrl,
-    mp4File{ asset->{ url } },
+    mp4File{ asset->{ url, mimeType } },
     description,
     year,
     client,
@@ -65,7 +65,7 @@ export const featuredProjectsQuery = groq`
     coverImage,
     youtubeUrl,
     vimeoUrl,
-    mp4File{ asset->{ url } }
+    mp4File{ asset->{ url, mimeType } }
   }
 `
 
@@ -79,7 +79,7 @@ export const projectBySlugQuery = groq`
     coverImage,
     youtubeUrl,
     vimeoUrl,
-    mp4File{ asset->{ url } },
+    mp4File{ asset->{ url, mimeType } },
     description,
     year,
     client

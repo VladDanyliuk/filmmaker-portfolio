@@ -68,11 +68,12 @@ export const project = defineType({
     }),
     defineField({
       name: 'mp4File',
-      title: 'Uploaded Video (MP4)',
+      title: 'Uploaded Video (MP4 / MOV)',
       type: 'file',
-      options: { accept: 'video/mp4' },
+      options: { accept: 'video/mp4,video/quicktime' },
       description:
         'Directly-uploaded vertical video (e.g. an Instagram Reel) that plays natively on the site. ' +
+        'Accepts .mp4 and .mov (iPhone exports .mov by default). ' +
         'Upload a Cover Image above for the thumbnail. Takes priority over YouTube/Vimeo URLs in the lightbox.',
     }),
     defineField({

@@ -18,7 +18,7 @@ const CATEGORIES = [
   'Business Videos',
   'Music Video',
   'Short Film',
-  'Brand Film',
+  'Short Form Content',
 ]
 
 // Display-label overrides for Sanity category values whose stored value differs
@@ -27,6 +27,7 @@ const CATEGORIES = [
 const CATEGORY_LABELS: Record<string, string> = {
   commercial: 'Events',
   documentary: 'Business Videos',
+  'brand-film': 'Short Form Content',
 }
 
 function formatCategory(slug: string): string {

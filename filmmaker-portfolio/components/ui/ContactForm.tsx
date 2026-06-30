@@ -116,12 +116,13 @@ export function ContactForm() {
           className={inputClass}
         >
           <option value="">Select a project type</option>
-          <option value="commercial">Commercial</option>
-          <option value="documentary">Documentary</option>
-          <option value="music-video">Music Video</option>
-          <option value="brand-film">Brand Film</option>
-          <option value="short-film">Short Film</option>
           <option value="wedding">Wedding</option>
+          <option value="events">Events</option>
+          <option value="business-videos">Business Videos</option>
+          <option value="music-video">Music Video</option>
+          <option value="concerts">Concerts</option>
+          <option value="short-film">Short Film</option>
+          <option value="short-form-content">Short Form Content</option>
           <option value="other">Other</option>
         </select>
       </div>

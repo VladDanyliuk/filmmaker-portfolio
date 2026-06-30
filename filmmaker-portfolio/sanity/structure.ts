@@ -45,18 +45,6 @@ export const structure: StructureResolver = (S) =>
                   )
               ),
               S.divider(),
-              // Catch-all so projects with no category set are never hidden.
-              S.listItem()
-                .id('uncategorized')
-                .title('Uncategorized')
-                .child(
-                  S.documentList()
-                    .title('Uncategorized')
-                    .schemaType('project')
-                    .filter('_type == "project" && !defined(category)')
-                    .defaultOrdering([{ field: 'order', direction: 'asc' }])
-                ),
-              S.divider(),
               // Flat view of every project, regardless of category.
               S.listItem()
                 .id('all')

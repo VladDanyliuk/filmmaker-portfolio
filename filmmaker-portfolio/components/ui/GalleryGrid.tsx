@@ -17,6 +17,7 @@ const CATEGORIES = [
   'Events',
   'Business Videos',
   'Music Video',
+  'Concerts',
   'Short Film',
   'Short Form Content',
 ]

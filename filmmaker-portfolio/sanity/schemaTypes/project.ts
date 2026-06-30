@@ -27,6 +27,7 @@ export const project = defineType({
           { title: 'Events', value: 'commercial' },
           { title: 'Business Videos', value: 'documentary' },
           { title: 'Music Video', value: 'music-video' },
+          { title: 'Concerts', value: 'concerts' },
           { title: 'Short Film', value: 'short-film' },
           { title: 'Short Form Content', value: 'brand-film' },
           { title: 'Wedding', value: 'wedding' },

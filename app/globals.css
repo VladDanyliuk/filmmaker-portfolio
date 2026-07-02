@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,20 +8,6 @@
   font-family: 'Clash Display';
   src: url('/fonts/ClashDisplay-Variable.woff2') format('woff2');
   font-weight: 200 700;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Neue Montreal';
-  src: url('/fonts/NeueMontreal-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Neue Montreal';
-  src: url('/fonts/NeueMontreal-Medium.woff2') format('woff2');
-  font-weight: 500;
   font-display: swap;
 }
 
@@ -35,7 +22,7 @@
   --color-border: rgba(255, 255, 255, 0.08);
 
   --font-display: 'Clash Display', sans-serif;
-  --font-body: 'Neue Montreal', sans-serif;
+  --font-body: 'Inter Tight', sans-serif;
 }
 
 /* ─── Base ───────────────────────────────────────────────────────────────── */

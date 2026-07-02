@@ -1,188 +1,58 @@
-# Videographer Portfolio
+# Filmmaker Portfolio — Production Client Project
 
-A production-ready cinematic portfolio website built with Next.js 15, Sanity CMS, Tailwind CSS, and Framer Motion.
+**Live:** https://website-freelance-taupe.vercel.app
 
----
+A real client project for a London-based videographer: a cinematic portfolio site with CMS-driven content, a secured contact pipeline, and GDPR compliance — designed, built, and shipped to production end-to-end.
 
-## Tech Stack
+![Homepage hero](docs/screenshot-home.png)
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 15 (App Router) |
-| Language | TypeScript |
-| Styling | Tailwind CSS |
-| CMS | Sanity v3 |
-| Animations | Framer Motion |
-| Deployment | Vercel |
+## Stack
 
----
+Next.js 15 (App Router) · TypeScript · Tailwind CSS · Sanity CMS v3 · Framer Motion · Resend · Upstash Redis · Vercel
 
-## Project Structure
+## What's inside
+
+- **Fully CMS-driven content** — every page (home, about, services, work, contact) is editable by the client in an embedded Sanity Studio at `/studio`: hero copy, services, project gallery, site settings. No developer needed for content changes
+- **Project gallery** with client-side category filtering, YouTube/Vimeo lightbox, and support for Reels/Shorts formats
+- **Contact form pipeline** — API route with Resend email delivery and durable rate limiting (3 requests / 15 min per IP) via Upstash Redis sliding window; falls back to an in-memory limiter in local dev
+- **Security headers** — Content-Security-Policy, X-Frame-Options and friends configured in `next.config.ts`
+- **GDPR** — cookie banner + privacy policy page; cookieless Vercel Analytics
+- **ISR** — `revalidate = 60`, so client content edits go live within a minute without redeploys
+- **Custom typography** — self-hosted variable font (Clash Display), `font-display: swap`
+
+## Architecture
 
 ```
-filmmaker-portfolio/
-├── app/
-│   ├── (site)/               # Main website routes
-│   │   ├── page.tsx          # Home
-│   │   ├── about/page.tsx
-│   │   ├── services/page.tsx
-│   │   ├── work/page.tsx
-│   │   └── contact/page.tsx
-│   ├── studio/               # Sanity Studio (embedded)
-│   ├── layout.tsx
-│   ├── globals.css
-│   └── not-found.tsx
-├── components/
-│   ├── layout/               # Navbar, Footer
-│   ├── sections/             # HeroSection, CTASection
-│   ├── ui/                   # ServiceCard, GalleryGrid, VideoEmbed, ContactForm, TextBlock
-│   └── motion/               # RevealOnScroll, PageTransition
-├── sanity/
-│   ├── schemaTypes/          # Sanity document schemas
-│   └── lib/                  # client.ts, queries.ts, image.ts
-├── lib/
-│   └── types.ts              # Shared TypeScript types
-└── public/
-    ├── fonts/                # Clash Display + Neue Montreal woff2 files
-    └── video/                # hero.mp4 (add your own)
+app/
+├── (site)/          # Public routes: home, about, services, work, contact
+├── api/contact/     # Contact form endpoint (Resend + rate limiting)
+└── studio/          # Embedded Sanity Studio
+components/
+├── layout/          # Navbar, Footer
+├── sections/        # Hero, CTA
+├── ui/              # GalleryGrid, VideoEmbed, ContactForm, CookieBanner...
+└── motion/          # RevealOnScroll, PageTransition (Framer Motion)
+sanity/
+├── schemaTypes/     # project, service, page, siteSettings
+└── lib/             # client, GROQ queries, image helpers
 ```
 
----
+## Challenges & decisions
 
-## Local Setup
+- **Rate limiting on serverless:** an in-memory limiter resets on every cold start and isn't shared across instances, so it provides no real protection on Vercel. Moved to Upstash Redis with a sliding-window algorithm for durable, cross-instance limiting
+- **Video handling:** the hero video and project reels went through several iterations — from static files to CMS-managed uploads with `.mov`/`.mp4` support and YouTube Shorts/Instagram Reels link-outs — so the client can manage all media without touching code
+- **Client handoff:** structured content schemas and singleton site settings in Sanity so a non-technical client can safely edit everything; environment variables and admin access documented and transferred
 
-### 1. Install dependencies
+## Running locally
 
 ```bash
 npm install
-```
-
-### 2. Configure environment variables
-
-Copy `.env.local.example` to `.env.local`:
-
-```bash
-cp .env.local.example .env.local
-```
-
-Fill in your Sanity project credentials:
-
-```env
-NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
-NEXT_PUBLIC_SANITY_DATASET=production
-NEXT_PUBLIC_SANITY_API_VERSION=2024-01-01
-SANITY_API_TOKEN=your_token   # only needed for mutations
-```
-
-**To get your Project ID:**
-1. Go to [sanity.io/manage](https://sanity.io/manage)
-2. Create a new project (or use existing)
-3. Copy the Project ID from the dashboard
-
-### 3. Add fonts
-
-Download and place in `public/fonts/`:
-- `ClashDisplay-Variable.woff2` — from [Fontshare](https://www.fontshare.com/fonts/clash-display)
-- `NeueMontreal-Regular.woff2`
-- `NeueMontreal-Medium.woff2` — from [Pangram Pangram](https://pangrampangram.com/products/neue-montreal)
-
-### 4. Add hero video (optional)
-
-Place your hero video at `public/video/hero.mp4`. On mobile, a fallback image from Sanity is used instead.
-
-### 5. Run development server
-
-```bash
+cp .env.local.example .env.local   # fill in Sanity project ID; Resend/Upstash optional locally
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) for the website.
+Sanity Studio is available at `http://localhost:3000/studio`.
 
 ---
 
-## Sanity Studio
-
-The Sanity Studio is embedded at `/studio`. Access it at:
-
-```
-http://localhost:3000/studio
-```
-
-### Content to populate in Studio
-
-1. **Site Settings** (singleton) — hero headline, subtitle, CTA buttons, hero video path, fallback image, contact email, social URLs
-
-2. **Pages** — create pages with slugs:
-   - `about`
-   - `services`
-   - `contact`
-   - `work`
-
-3. **Services** — add services with title, description, and order number
-
-4. **Projects** — add projects with title, category, cover image, optional YouTube URL, year, client. Check "Featured" to show on home page.
-
----
-
-## Form Submission
-
-The contact form (`components/ui/ContactForm.tsx`) uses a mock submission by default. To wire up a real service:
-
-**Option A — Formspree:**
-```bash
-npm install @formspree/react
-```
-Replace the `handleSubmit` function with Formspree's `useForm` hook.
-
-**Option B — Resend:**
-Create `app/api/contact/route.ts` and call Resend from it.
-
----
-
-## Deployment (Vercel)
-
-### 1. Push to GitHub
-
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-git remote add origin https://github.com/your-username/filmmaker-portfolio.git
-git push -u origin main
-```
-
-### 2. Deploy on Vercel
-
-1. Go to [vercel.com](https://vercel.com) → New Project
-2. Import your GitHub repo
-3. Add environment variables (same as `.env.local`)
-4. Deploy
-
-### 3. Configure Sanity CORS
-
-In [sanity.io/manage](https://sanity.io/manage) → your project → API → CORS Origins:
-- Add your Vercel URL: `https://your-site.vercel.app`
-- Add `http://localhost:3000` for local dev
-
----
-
-## Customisation
-
-| What | Where |
-|------|-------|
-| Colors | `tailwind.config.ts` + `app/globals.css` CSS vars |
-| Fonts | `app/globals.css` @font-face + `tailwind.config.ts` fontFamily |
-| Nav links | `components/layout/Navbar.tsx` `navLinks` array |
-| Footer | `components/layout/Footer.tsx` |
-| Hero animations | `components/sections/HeroSection.tsx` |
-| CMS schemas | `sanity/schemaTypes/` |
-| GROQ queries | `sanity/lib/queries.ts` |
-
----
-
-## Notes
-
-- All page text is CMS-driven via Sanity. No hardcoded copy except structural labels.
-- Hero video is replaced with a static image on mobile (performance + autoplay restrictions).
-- Gallery has client-side category filtering and a YouTube lightbox.
-- `revalidate = 60` on all pages — content updates appear within 60 seconds.
+Built by [Vlad Danyliuk](https://github.com/VladDanyliuk)

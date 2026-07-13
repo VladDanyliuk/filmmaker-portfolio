@@ -2,14 +2,16 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { urlFor } from '@/sanity/lib/image'
-import type { Project } from '@/lib/types'
+import type { CategorySettings, Project } from '@/lib/types'
 import { VideoEmbed } from './VideoEmbed'
 
 interface GalleryGridProps {
   projects: Project[]
   showFilters?: boolean
+  categorySettings?: CategorySettings | null
 }
 
 const CATEGORIES = [
@@ -29,6 +31,19 @@ const CATEGORY_LABELS: Record<string, string> = {
   commercial: 'Events',
   documentary: 'Business Videos',
   'brand-film': 'Short Form Content',
+}
+
+// Maps each display category to its "Coming Soon" flag on the categorySettings
+// singleton (Studio → Category Visibility). A flagged category keeps its tab
+// but shows a lock message instead of the project grid.
+const COMING_SOON_KEYS: Record<string, keyof CategorySettings> = {
+  Wedding: 'weddingComingSoon',
+  Events: 'eventsComingSoon',
+  'Business Videos': 'businessVideosComingSoon',
+  'Music Video': 'musicVideoComingSoon',
+  Concerts: 'concertsComingSoon',
+  'Short Film': 'shortFilmComingSoon',
+  'Short Form Content': 'shortFormContentComingSoon',
 }
 
 function formatCategory(slug: string): string {
@@ -116,7 +131,11 @@ function Thumbnail({
   )
 }
 
-export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) {
+export function GalleryGrid({
+  projects,
+  showFilters = true,
+  categorySettings,
+}: GalleryGridProps) {
   const [activeCategory, setActiveCategory] = useState('Wedding')
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [vimeoThumbnails, setVimeoThumbnails] = useState<Record<string, string>>({})
@@ -198,8 +217,16 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
     })
   }, [projects])
 
+  // A locked ("Coming Soon") category keeps its tab but renders a lock message
+  // instead of its projects; emptying `filtered` reuses the grid's exit
+  // animation when switching onto a locked tab.
+  const activeLocked =
+    showFilters && !!categorySettings?.[COMING_SOON_KEYS[activeCategory]]
+
   const filtered = showFilters
-    ? projects.filter((p) => formatCategory(p.category) === activeCategory)
+    ? activeLocked
+      ? []
+      : projects.filter((p) => formatCategory(p.category) === activeCategory)
     : projects
 
   return (
@@ -235,8 +262,50 @@ export function GalleryGrid({ projects, showFilters = true }: GalleryGridProps) 
         </div>
       )}
 
+      {/* ── Coming Soon — category locked from Studio (Category Visibility) ── */}
+      {activeLocked && (
+        <motion.div
+          key={activeCategory}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+          className="text-center py-16 md:py-24"
+        >
+          <div className="w-14 h-14 mx-auto mb-6 rounded-full border border-white/[0.12] bg-bg-secondary flex items-center justify-center">
+            <svg
+              className="w-6 h-6 text-accent-orange"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+              />
+            </svg>
+          </div>
+          <h3 className="font-display text-2xl md:text-3xl font-medium tracking-tight mb-3">
+            Coming Soon
+          </h3>
+          <p className="text-text-secondary/70 max-w-md mx-auto mb-8 leading-relaxed">
+            This page is launching soon.
+            <br />
+            Come back later and check it out!
+          </p>
+          <Link
+            href="/contact"
+            className="inline-flex items-center justify-center px-8 py-3.5 bg-accent-orange text-bg font-medium text-sm rounded-full hover:bg-accent-gold transition-all duration-300 hover:scale-[1.02] glow-orange"
+          >
+            Contact Me
+          </Link>
+        </motion.div>
+      )}
+
       {/* ── Empty state — e.g. the default category has no projects yet ─────── */}
-      {showFilters && filtered.length === 0 && (
+      {showFilters && !activeLocked && filtered.length === 0 && (
         <p className="text-text-secondary/60 text-center py-16">
           No projects in this category yet.
         </p>

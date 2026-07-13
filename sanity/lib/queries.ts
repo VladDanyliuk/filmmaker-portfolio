@@ -37,8 +37,11 @@ export const allServicesQuery = groq`
   }
 `
 
-export const allProjectsQuery = groq`
-  *[_type == "project"] | order(order asc) {
+// Projects plus the categorySettings singleton in one round trip — the
+// /services page needs both (settings drive the per-category "Coming Soon"
+// lock in GalleryGrid).
+export const projectsWithCategorySettingsQuery = groq`{
+  "projects": *[_type == "project"] | order(order asc) {
     _id,
     title,
     "slug": slug.current,
@@ -52,8 +55,17 @@ export const allProjectsQuery = groq`
     year,
     client,
     featured
+  },
+  "categorySettings": *[_type == "categorySettings"][0] {
+    weddingComingSoon,
+    eventsComingSoon,
+    businessVideosComingSoon,
+    musicVideoComingSoon,
+    concertsComingSoon,
+    shortFilmComingSoon,
+    shortFormContentComingSoon
   }
-`
+}`
 
 export const featuredProjectsQuery = groq`
   *[_type == "project" && featured == true] | order(order asc) [0...6] {

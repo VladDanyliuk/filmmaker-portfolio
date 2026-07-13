@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
-import { pageBySlugQuery, allProjectsQuery } from '@/sanity/lib/queries'
-import type { Page, Project } from '@/lib/types'
+import { pageBySlugQuery, projectsWithCategorySettingsQuery } from '@/sanity/lib/queries'
+import type { CategorySettings, Page, Project } from '@/lib/types'
 import { GalleryGrid } from '@/components/ui/GalleryGrid'
 import { CTASection } from '@/components/sections/CTASection'
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll'
@@ -26,9 +26,13 @@ function hotspotPosition(img?: { hotspot?: { x: number; y: number } }) {
 }
 
 export default async function ServicesPage() {
-  const [page, projects] = await Promise.all([
+  const [page, { projects, categorySettings }] = await Promise.all([
     client.fetch<Page>(pageBySlugQuery, { slug: 'services' }).catch(() => null),
-    client.fetch<Project[]>(allProjectsQuery).catch(() => [] as Project[]),
+    client
+      .fetch<{ projects: Project[]; categorySettings: CategorySettings | null }>(
+        projectsWithCategorySettingsQuery
+      )
+      .catch(() => ({ projects: [] as Project[], categorySettings: null })),
   ])
 
   const heroSrc = page?.heroImage
@@ -151,7 +155,7 @@ export default async function ServicesPage() {
       <section className="pb-20 md:pb-32">
         <div className="container mx-auto px-6 md:px-10">
           {projects?.length > 0 ? (
-            <GalleryGrid projects={projects} showFilters />
+            <GalleryGrid projects={projects} showFilters categorySettings={categorySettings} />
           ) : (
             <p className="text-text-secondary text-center py-16">
               Projects coming soon.

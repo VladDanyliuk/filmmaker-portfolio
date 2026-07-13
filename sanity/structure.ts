@@ -23,6 +23,13 @@ export const structure: StructureResolver = (S) =>
         .child(
           S.document().schemaType('siteSettings').documentId('siteSettings')
         ),
+      S.listItem()
+        .title('Category Visibility')
+        .child(
+          S.document()
+            .schemaType('categorySettings')
+            .documentId('categorySettings')
+        ),
       S.divider(),
       S.documentTypeListItem('page').title('Pages'),
       S.listItem()

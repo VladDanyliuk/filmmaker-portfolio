@@ -41,6 +41,16 @@ export interface SanityImage {
   alt?: string
 }
 
+export interface CategorySettings {
+  weddingComingSoon?: boolean
+  eventsComingSoon?: boolean
+  businessVideosComingSoon?: boolean
+  musicVideoComingSoon?: boolean
+  concertsComingSoon?: boolean
+  shortFilmComingSoon?: boolean
+  shortFormContentComingSoon?: boolean
+}
+
 export interface Page {
   title: string
   subtitle: string

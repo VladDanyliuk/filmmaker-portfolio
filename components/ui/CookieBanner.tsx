@@ -15,8 +15,9 @@ export function CookieBanner() {
     }
   }, [])
 
-  const handleDismiss = () => {
-    localStorage.setItem(CONSENT_KEY, 'dismissed')
+  const handleConsent = (choice: 'accepted' | 'declined') => {
+    localStorage.setItem(CONSENT_KEY, choice)
+    window.dispatchEvent(new Event('cookie-consent-change'))
     setVisible(false)
   }
 
@@ -32,8 +33,8 @@ export function CookieBanner() {
         >
           <div className="max-w-3xl mx-auto bg-bg-secondary border border-glass rounded-sm px-5 py-4 md:px-6 md:py-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 shadow-2xl">
             <p className="text-sm text-text-secondary leading-relaxed flex-1">
-              This site uses no advertising or tracking cookies — only a small note in your browser so
-              this message stays dismissed, plus privacy-friendly, cookieless analytics.{' '}
+              We use cookies to analyze site traffic and improve your experience. You can accept or
+              decline analytics cookies.{' '}
               <Link
                 href="/privacy-policy"
                 className="text-text-primary underline underline-offset-2 hover:text-accent-orange transition-colors duration-200"
@@ -43,10 +44,16 @@ export function CookieBanner() {
             </p>
             <div className="flex items-center gap-3 shrink-0">
               <button
-                onClick={handleDismiss}
+                onClick={() => handleConsent('declined')}
+                className="px-4 py-2 text-xs uppercase tracking-widest border border-glass text-text-secondary font-medium rounded-full hover:text-text-primary hover:border-text-secondary transition-all duration-200"
+              >
+                Decline
+              </button>
+              <button
+                onClick={() => handleConsent('accepted')}
                 className="px-4 py-2 text-xs uppercase tracking-widest bg-accent-orange text-bg font-medium rounded-full hover:bg-accent-gold transition-all duration-200"
               >
-                Got it
+                Accept
               </button>
             </div>
           </div>

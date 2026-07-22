@@ -106,21 +106,37 @@ export default function PrivacyPolicyPage() {
                   4. Cookies, Local Storage & Analytics
                 </h2>
                 <p>
-                  This website does not use any advertising or tracking cookies, and does not track
-                  you across other sites.
-                </p>
-                <p>
-                  The only thing stored on your device is a single preference saved in your browser's
-                  local storage under the key{' '}
+                  We record your cookie preference in your browser's local storage under the key{' '}
                   <code className="text-accent-orange bg-bg-secondary px-1.5 py-0.5 rounded-sm text-xs">
                     cookie-consent
                   </code>{' '}
-                  when you dismiss the cookie notice. This simply records your choice so the notice
-                  isn't shown again. It is never transmitted to any server. You can clear it at any
-                  time via your browser's local storage settings.
+                  when you accept or decline the cookie notice. This simply remembers your choice so
+                  the notice isn't shown again, and is never transmitted to any server. You can clear
+                  it at any time via your browser's local storage settings.
                 </p>
                 <p>
-                  To understand how the site is performing, we use{' '}
+                  With your consent, we use{' '}
+                  <a
+                    href="https://policies.google.com/privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-text-primary underline underline-offset-2 hover:text-accent-orange transition-colors duration-200"
+                  >
+                    Google Analytics 4
+                  </a>
+                  , a web analytics service provided by Google, to understand how visitors use the
+                  site. Google Analytics sets cookies on your device and may process usage data such
+                  as page views, referrers, and general location and device type. These analytics
+                  cookies are only loaded if you select &ldquo;Accept&rdquo; in the cookie notice —
+                  if you decline, or have not yet made a choice, Google Analytics is not loaded and no
+                  analytics cookies are set. You can withdraw your consent at any time by clearing the{' '}
+                  <code className="text-accent-orange bg-bg-secondary px-1.5 py-0.5 rounded-sm text-xs">
+                    cookie-consent
+                  </code>{' '}
+                  preference in your browser's local storage.
+                </p>
+                <p>
+                  We also use{' '}
                   <a
                     href="https://vercel.com/docs/analytics/privacy-policy"
                     target="_blank"
@@ -129,10 +145,8 @@ export default function PrivacyPolicyPage() {
                   >
                     Vercel Web Analytics
                   </a>
-                  , a privacy-friendly, cookieless analytics tool. It collects only anonymous,
-                  aggregate statistics — such as page views, referrers, and general location and
-                  device type — and does not use cookies, does not track individual visitors, and does
-                  not store any personally identifiable information about you.
+                  , a privacy-friendly, cookieless analytics tool that collects only anonymous,
+                  aggregate statistics and does not use cookies or track individual visitors.
                 </p>
               </div>
             </RevealOnScroll>

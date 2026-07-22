@@ -11,13 +11,18 @@ import type { NextConfig } from 'next'
 // connect/frame/img/media/worker entries cover: Sanity API + CDN (incl. Studio
 // realtime over wss + blob web workers), the Vimeo oEmbed fetch in GalleryGrid,
 // and YouTube/Vimeo video embeds. Resend is server-side only (no client origin).
+//
+// Google entries cover consent-gated GA4 (gtag.js): googletagmanager.com loads
+// the script, and google-analytics.com + googletagmanager.com receive the beacon
+// data. Fonts (Clash Display + Inter Tight) are self-hosted from /public/fonts,
+// so no Google Fonts origins are needed.
 const contentSecurityPolicy = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://cdn.sanity.io https://img.youtube.com https://i.vimeocdn.com https://f.vimeocdn.com",
   "font-src 'self' data:",
-  "connect-src 'self' https://*.sanity.io wss://*.sanity.io https://vimeo.com",
+  "connect-src 'self' https://*.sanity.io wss://*.sanity.io https://vimeo.com https://www.google-analytics.com https://www.googletagmanager.com",
   "frame-src 'self' https://www.youtube-nocookie.com https://player.vimeo.com",
   "media-src 'self' blob: https:",
   "worker-src 'self' blob:",

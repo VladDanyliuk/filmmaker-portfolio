@@ -4,7 +4,7 @@
 
 A real client project for a London-based videographer: a cinematic portfolio site with CMS-driven content, a secured contact pipeline, and GDPR compliance — designed, built, and shipped to production end-to-end.
 
-![Homepage hero](docs/screenshot-home.png)
+![Homepage hero](screenshot-home.png)
 
 ## Stack
 
